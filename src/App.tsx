@@ -52,10 +52,6 @@ function App() {
     }
   }, []);
 
-  useEffect(() => {
-    
-  })
-
   const createItem = async (text: string) => {
     setIsChanging(true);
 
@@ -123,7 +119,6 @@ function App() {
 
   return (
     <ThemeProvider>
-      
       <div className="min-h-screen bg-white dark:bg-black p-10 rounded-lg text-gray-800 dark:text-gray-200">
         <div className="w-full">
           <Theme />
@@ -141,7 +136,6 @@ function App() {
         <AddItem blocked={ isChanging || isLoading } onAddItem={ createItem }/>
       </div>
     </ThemeProvider>
-    
   )
 }
 
