@@ -16,15 +16,21 @@ function AddItem({ onAddItem, blocked }: { onAddItem: (text: string) => void, bl
         onAddItem(newItemText);
     }
 
+    const getButtonClass = (disabled: boolean) => {
+      return disabled ? 
+        'bg-gray-200 text-gray-400 dark:bg-gray-700 dark:text-gray-500' : 
+        'bg-orange-300 text-gray-800 dark:bg-orange-500 dark:text-gray-100';
+    }
+
     return (
-        <div>
-          <form onSubmit={ addNetItem }>
-            <div className="flex mb-5 gap-5">
-              <Input className="flex-1" value={ newItemText } onChange={ handleNewItemText } disabled={ blocked } />
-              <Button className={`p-2 rounded-md ${(!newItemText ? 'bg-gray-200 text-gray-400' : 'bg-blue-300')}`} text="Novo item" disabled={ !newItemText || blocked } />
-            </div>
-          </form>
-        </div>
+      <div>
+        <form onSubmit={ addNetItem }>
+          <div className="flex mb-5 gap-5">
+            <Input className="flex-1 border-gray-200 dark:border-gray-500 bg-white dark:bg-gray-700" value={ newItemText } onChange={ handleNewItemText } disabled={ blocked } />
+            <Button className={`p-2 rounded-md ${ getButtonClass(!newItemText) }`} text="Novo item" disabled={ !newItemText || blocked } />
+          </div>
+        </form>
+      </div>
     )
 }
 
