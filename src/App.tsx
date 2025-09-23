@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import type { ListItem, ResponseOK, ResponseError } from './types';
 
@@ -9,7 +9,7 @@ import Skeleton from './components/Skeleton/Skeleton';
 import Header from './components/Header';
 import AddItem from './components/AddItem';
 import ItemsList from './components/ItemsList';
-import Toast from './components/Toast';
+import { Toast, type ToastRef } from './components/Toast/Toast';
 
 import './App.css';
 
@@ -18,18 +18,15 @@ function App() {
   const [listItems, setListItems] = useState<ListItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
-  const [error, setError] = useState<ResponseError | null>(null);
+  
+  const toastRef = useRef<ToastRef | null>(null);
 
   const loadItems = async () => {
-    setError(null);
-
     const response = await getItems();
-
     if (response.status === 'ok') {
       return response.data || [];
     }
     
-    setError(response);
     return [];
   }
   
@@ -52,6 +49,10 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    
+  })
+
   const createItem = async (text: string) => {
     setIsChanging(true);
 
@@ -60,7 +61,7 @@ function App() {
     if (response.status === 'ok') {
       setListItems([...listItems, response.data]);
     } else {
-      setError(response);
+      toastRef.current?.show(response.error);
     }
 
     setIsChanging(false);
@@ -79,7 +80,7 @@ function App() {
         return item;
       }));
     } else {
-      setError(response);
+      toastRef.current?.show(response.error);
     }
     setIsChanging(false);
   }
@@ -92,7 +93,7 @@ function App() {
     if (response.status === 'ok') {
       setListItems(listItems.filter((item) => item.id !== id));
     } else {
-      setError(response);
+      toastRef.current?.show(response.error);
     }
     setIsChanging(false);
   }
@@ -111,7 +112,7 @@ function App() {
           return item;
         }));
       } else {
-        setError(response);
+        toastRef.current?.show(response.error);
       }
       setIsChanging(false);
     }
@@ -128,9 +129,7 @@ function App() {
               <ItemsList items={ listItems } isChanging={ isChanging } onCheckItem={ toggleChecked } onNewText={ editItemText } onDelete={ remove }/>
           }
         </div>
-        {
-          error && <Toast text={ error.error } />
-        }
+        <Toast ref={ toastRef } />
         
       </div>
       <AddItem blocked={ isChanging || isLoading } onAddItem={ createItem }/>

@@ -3,7 +3,7 @@ import { ERROR, SUCCESS, type ErrorCode } from "./RequestConsts";
 
 
 function normalizeError (error: errorTypes): ErrorCode {
-    const code = error.code || (error.response?.status && `HTTP_${error.response?.status}`) || "";
+    const code = (error.response?.status && `HTTP_${error.response?.status}`) || error.code || "";
 
     if (code in ERROR) {
         return code as ErrorCode;

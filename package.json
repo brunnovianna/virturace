@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "format": "prettier --write .",
     "lint:fix": "eslint . --fix",
-    "api": "json-server ./db.json --delay 4000"
+    "api": "json-server ./db.json --delay 1000"
   },
   "dependencies": {
     "axios": "^1.11.0",
