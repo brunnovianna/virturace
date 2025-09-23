@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
-const darkModeDefault = false;
-
+const darkModeDefault = !!window.localStorage.getItem('theme');
 const ThemeContext = createContext({
     toggleDarkTheme: () => {},
     darkMode: darkModeDefault
@@ -16,6 +15,12 @@ export function ThemeProvider ({ children }: { children: ReactNode}) {
 
     useEffect(() => {
         document.documentElement.classList.toggle('dark', darkMode);
+        
+        if (!darkMode) {
+            window.localStorage.removeItem('theme');
+        } else {
+            window.localStorage.setItem('theme', 'dark');
+        }
     }, [darkMode]);
 
     const toggleDarkTheme = () => {
