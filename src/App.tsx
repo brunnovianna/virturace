@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 
 import type { ListItem, ResponseOK, ResponseError } from './types';
 
+import { ThemeProvider } from './contexts/Theme';
+
 import { getItems, createNewItem, updateItemText, toggleItemCheck, deleteItem } from './services/items';
 
 import Skeleton from './components/Skeleton/Skeleton';
@@ -9,16 +11,17 @@ import Skeleton from './components/Skeleton/Skeleton';
 import Header from './components/Header';
 import AddItem from './components/AddItem';
 import ItemsList from './components/ItemsList';
+import Theme from './components/Theme';
+
 import { Toast, type ToastRef } from './components/Toast/Toast';
 
 import './App.css';
-
 
 function App() {
   const [listItems, setListItems] = useState<ListItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
-  
+
   const toastRef = useRef<ToastRef | null>(null);
 
   const loadItems = async () => {
@@ -119,21 +122,26 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-white p-10 rounded-lg">
-      <div className="w-full">
-        <Header itemsQty={ listItems.length }/>
-        <div className="space-y-2 my-6">
-          {
-            isLoading ? 
-              <Skeleton /> :
-              <ItemsList items={ listItems } isChanging={ isChanging } onCheckItem={ toggleChecked } onNewText={ editItemText } onDelete={ remove }/>
-          }
+    <ThemeProvider>
+      
+      <div className="min-h-screen bg-white dark:bg-black p-10 rounded-lg text-gray-800 dark:text-gray-200">
+        <div className="w-full">
+          <Theme />
+          <Header itemsQty={ listItems.length }/>
+          <div className="space-y-2 my-6">
+            {
+              isLoading ? 
+                <Skeleton /> :
+                <ItemsList items={ listItems } isChanging={ isChanging } onCheckItem={ toggleChecked } onNewText={ editItemText } onDelete={ remove }/>
+            }
+          </div>
+          <Toast ref={ toastRef } />
+          
         </div>
-        <Toast ref={ toastRef } />
-        
+        <AddItem blocked={ isChanging || isLoading } onAddItem={ createItem }/>
       </div>
-      <AddItem blocked={ isChanging || isLoading } onAddItem={ createItem }/>
-    </div>
+    </ThemeProvider>
+    
   )
 }
 
