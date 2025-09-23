@@ -15,7 +15,7 @@ export type ErrorCode =
         "message": "Verifique sua conexão com a internet"
     },
     "HTTP_404": {
-        "message": "Item não encontrado"
+        "message": "Rota não encontrada"
     },
     "HTTP_500": {
         "message": "Problema no servidor. Tente novamente."
