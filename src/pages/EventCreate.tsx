@@ -118,7 +118,7 @@ export default function EventCreate() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
-          placeholder="Conte o clima da corrida — por que vai ser boa?"
+          placeholder="Detalhe a corrida e faça a chamada pra galera."
         />
 
         <span className="rotulo">Modalidades</span>
