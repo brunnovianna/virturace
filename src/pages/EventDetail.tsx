@@ -278,11 +278,8 @@ export default function EventDetail() {
           <div className="rounded-2xl bg-black/25 p-4 text-sm text-white">
             ✓ Você tá na pista
             {mine.modality ? ` na ${modalityLabel(mine.modality)}` : ''}! Quando
-            terminar a corrida, envie sua foto em{' '}
-            <Link to="/minhas-pistas" className="font-semibold text-amarelo">
-              Minhas pistas
-            </Link>{' '}
-            para cunhar a sua.
+            terminar, acesse a corrida e clique em{' '}
+            <span className="font-semibold text-amarelo">Finalizei</span>.
           </div>
         )}
         {mine?.status === 'completed' && (
