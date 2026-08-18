@@ -122,9 +122,6 @@ export default function EventCreate() {
         />
 
         <span className="rotulo">Modalidades</span>
-        <p className="-mt-1 mb-2 text-xs text-papel-fraco">
-          Caminhada, corrida, várias distâncias — tudo junto na mesma prova.
-        </p>
         <div className="flex flex-col gap-2.5">
           {modalities.map(({ key, draft }, i) => (
             <div key={key} className="flex items-center gap-2">
