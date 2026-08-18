@@ -183,7 +183,7 @@ export default function MyTracks() {
               <span
                 className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
                   done
-                    ? 'rotate-2 bg-amarelo text-amarelo-ink'
+                    ? 'bg-amarelo text-amarelo-ink'
                     : 'bg-agua text-agua-escuro'
                 }`}
               >
@@ -287,7 +287,7 @@ export default function MyTracks() {
 
       {upcoming.length > 0 && (
         <section className="mb-8">
-          <h2 className="mb-3.5 -rotate-1 font-display text-2xl">
+          <h2 className="mb-3.5 font-display text-2xl">
             Próximas e em andamento
           </h2>
           <div className="flex flex-col gap-4">{upcoming.map(renderTrack)}</div>
@@ -296,7 +296,7 @@ export default function MyTracks() {
 
       {past.length > 0 && (
         <section>
-          <h2 className="mb-3.5 -rotate-1 font-display text-2xl">Já rolaram</h2>
+          <h2 className="mb-3.5 font-display text-2xl">Já rolaram</h2>
           <div className="flex flex-col gap-4">{past.map(renderTrack)}</div>
         </section>
       )}

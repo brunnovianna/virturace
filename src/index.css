@@ -52,7 +52,6 @@ body {
   }
   .chip-corrida--sol {
     @apply bg-amarelo text-amarelo-ink;
-    transform: rotate(2deg);
   }
 
   .titulo-corrida {

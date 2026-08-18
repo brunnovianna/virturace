@@ -43,24 +43,24 @@ export default function EventList() {
             return (
               <div
                 key={event.id}
-                className={`${posterGradient(i)} relative flex min-h-[190px] flex-col overflow-hidden rounded-[22px] text-left transition-transform hover:-rotate-1 hover:scale-[1.015] motion-reduce:transform-none`}
+                className={`${posterGradient(i)} relative flex min-h-[190px] flex-col overflow-hidden rounded-[22px] text-left transition-transform hover:scale-[1.015] motion-reduce:transform-none`}
               >
                 <Link
                   to={`/corrida/${event.id}`}
                   aria-label={`Abrir ${event.name}`}
-                  className="absolute inset-0 z-0"
+                  className="absolute inset-0 z-10"
                 />
                 {mine && (
                   <Link
                     to={`/corrida/${event.id}/editar`}
                     aria-label={`Editar ${event.name}`}
                     title="Editar corrida"
-                    className="absolute right-2.5 top-2.5 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-base text-white no-underline transition hover:bg-black/50"
+                    className="absolute right-2.5 top-2.5 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-base text-white no-underline transition hover:bg-black/50"
                   >
                     ✏️
                   </Link>
                 )}
-                <div className="relative z-0 flex flex-1 gap-3.5 p-4">
+                <div className="pointer-events-none relative z-0 flex flex-1 gap-3.5 p-4">
                   <div className="flex flex-none flex-col items-center justify-center rounded-2xl bg-black/25 px-3 py-2.5 text-papel">
                     <span className="font-display text-2xl leading-none">
                       {dt.startDay}
@@ -92,16 +92,17 @@ export default function EventList() {
                   </div>
 
                   <div className="flex min-w-0 flex-col gap-2">
-                    <h3 className="-rotate-1 font-display text-2xl leading-none">
+                    <h3 className="font-display text-2xl leading-none">
                       {event.name}
                     </h3>
                     <span className="flex flex-wrap gap-1.5">
                       {groups.map((g) => (
                         <span
                           key={g.kind}
-                          className="rounded-full bg-white/20 px-2.5 py-1 text-sm font-semibold"
+                          className="rounded-full bg-white/20 px-2.5 py-1 text-sm"
                         >
-                          {g.emoji} {g.label}
+                          <b className="font-semibold">{g.kindLabel}</b>{' '}
+                          <span className="opacity-90">{g.label}</span>
                         </span>
                       ))}
                     </span>

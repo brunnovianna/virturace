@@ -10,7 +10,6 @@ import {
   firstName,
   formatDate,
   formatRangeShort,
-  modalityKindEmoji,
   modalityLabel,
   posterGradient,
 } from '../utils';
@@ -171,7 +170,7 @@ export default function EventDetail() {
         <div className="flex flex-wrap gap-2 pr-12">
           {data.modalities.map((m) => (
             <span key={m.id} className="chip-corrida">
-              {modalityKindEmoji(m.kind)} {modalityLabel(m)}
+              {modalityLabel(m)}
             </span>
           ))}
         </div>
@@ -243,7 +242,7 @@ export default function EventDetail() {
                         onChange={() => setChosenModality(m.id)}
                       />
                       <span>
-                        {modalityKindEmoji(m.kind)} {modalityLabel(m)}
+                        {modalityLabel(m)}
                       </span>
                     </label>
                   ))}
@@ -310,7 +309,7 @@ export default function EventDetail() {
 
       {completed.length > 0 && (
         <>
-          <h2 className="mb-3.5 mt-9 -rotate-1 font-display text-2xl">
+          <h2 className="mb-3.5 mt-9 font-display text-2xl">
             Mural de medalhas
           </h2>
           <div className="flex flex-wrap gap-4">
