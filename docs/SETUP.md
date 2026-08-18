@@ -64,7 +64,7 @@ Dá para gerar em <https://www.random.org/passwords/?num=2&len=24&format=plain>
    > nos tokens que as funções assinam.
 
 3. Clique **Deploy**. Ao final, abra a URL gerada: a tela "Bora correr por
-   aí?" deve carregar. Crie sua conta, monte uma festa e teste o fluxo
+   aí?" deve carregar. Crie sua conta, monte uma corrida e teste o fluxo
    completo (inscrição → foto → medalha).
 
 ## Problemas comuns
@@ -72,7 +72,7 @@ Dá para gerar em <https://www.random.org/passwords/?num=2&len=24&format=plain>
 - **"Erro inesperado" ao entrar/cadastrar** → confira `HASURA_ENDPOINT`,
   `HASURA_ADMIN_SECRET` e `JWT_SECRET` na Vercel (Settings → Environment
   Variables) e faça **Redeploy** depois de alterar.
-- **Login funciona mas as festas não carregam (JWT inválido)** → o
+- **Login funciona mas as corridas não carregam (JWT inválido)** → o
   `HASURA_GRAPHQL_JWT_SECRET` do Hasura não bate com o `JWT_SECRET` da
   Vercel, ou não é um JSON válido.
 - **Import de metadata falhou** → verifique se a env `PG_DATABASE_URL`

@@ -25,18 +25,18 @@ body {
     @apply text-papel;
   }
 
-  .btn-festa {
+  .btn-corrida {
     @apply inline-block cursor-pointer rounded-full bg-laranja px-6 py-2.5 font-display text-lg tracking-wide transition-transform;
     color: #3c1a00;
     transform: rotate(-1deg);
   }
-  .btn-festa:hover:not(:disabled) {
+  .btn-corrida:hover:not(:disabled) {
     transform: rotate(-1deg) scale(1.04);
   }
-  .btn-festa:disabled {
+  .btn-corrida:disabled {
     @apply cursor-wait opacity-60;
   }
-  .btn-festa--agua {
+  .btn-corrida--agua {
     @apply bg-agua text-agua-escuro;
   }
 
@@ -47,15 +47,15 @@ body {
     @apply mb-1.5 mt-4 block text-[0.8rem] font-semibold text-papel-suave;
   }
 
-  .chip-festa {
+  .chip-corrida {
     @apply whitespace-nowrap rounded-full bg-black/25 px-3 py-1 text-xs font-semibold text-white;
   }
-  .chip-festa--sol {
+  .chip-corrida--sol {
     @apply bg-amarelo text-amarelo-ink;
     transform: rotate(2deg);
   }
 
-  .titulo-festa {
+  .titulo-corrida {
     @apply my-3 font-display text-4xl sm:text-[2.6rem];
     transform: rotate(-1.2deg);
     text-wrap: balance;
@@ -85,8 +85,8 @@ body {
   .confete {
     display: none;
   }
-  .btn-festa,
-  .btn-festa:hover:not(:disabled) {
+  .btn-corrida,
+  .btn-corrida:hover:not(:disabled) {
     transition: none;
     transform: none;
   }

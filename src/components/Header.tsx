@@ -25,10 +25,10 @@ export default function Header() {
       </Link>
       <div className="flex flex-wrap gap-1.5">
         <NavLink to="/" end className={tabClass}>
-          Festas
+          Corridas
         </NavLink>
         <NavLink to="/criar" className={tabClass}>
-          Criar festa
+          Criar corrida
         </NavLink>
         <NavLink to="/medalhas" className={tabClass}>
           Minhas medalhas

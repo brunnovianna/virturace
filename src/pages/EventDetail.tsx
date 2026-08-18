@@ -40,7 +40,7 @@ export default function EventDetail() {
   if (isPending) {
     return (
       <main className="mx-auto max-w-4xl px-5 pt-6">
-        <p className="text-papel-suave">Carregando a festa...</p>
+        <p className="text-papel-suave">Carregando a corrida...</p>
       </main>
     );
   }
@@ -48,10 +48,10 @@ export default function EventDetail() {
     return (
       <main className="mx-auto max-w-4xl px-5 pt-6">
         <p className="text-[#ff6b6b]">
-          {error ? gqlErrorMessage(error) : 'Festa não encontrada.'}
+          {error ? gqlErrorMessage(error) : 'Corrida não encontrada.'}
         </p>
         <Link to="/" className="font-semibold text-agua underline">
-          ← Todas as festas
+          ← Todas as corridas
         </Link>
       </main>
     );
@@ -69,11 +69,11 @@ export default function EventDetail() {
         to="/"
         className="text-sm font-semibold text-agua no-underline hover:underline"
       >
-        ← Todas as festas
+        ← Todas as corridas
       </Link>
 
       <div className={`${posterGradient(gradIndex)} mt-3.5 rounded-3xl p-7`}>
-        <span className="chip-festa">{formatKm(data.distanceKm)}</span>
+        <span className="chip-corrida">{formatKm(data.distanceKm)}</span>
         <h1 className="my-2 -rotate-1 font-display text-3xl sm:text-4xl">
           {data.name}
         </h1>
@@ -111,7 +111,7 @@ export default function EventDetail() {
             type="button"
             onClick={handleSubscribe}
             disabled={subscribing}
-            className="btn-festa btn-festa--agua"
+            className="btn-corrida btn-corrida--agua"
           >
             {subscribing ? 'Entrando...' : 'Entrar na pista 🎉'}
           </button>
@@ -141,7 +141,7 @@ export default function EventDetail() {
 
         {data.creatorName && (
           <p className="mt-4 text-xs opacity-80">
-            Festa organizada por {firstName(data.creatorName)}
+            Corrida organizada por {firstName(data.creatorName)}
           </p>
         )}
       </div>
