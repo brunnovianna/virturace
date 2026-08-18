@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  // Os gradientes dos cartazes são escolhidos em runtime (`g${i}` em
+  // posterGradient), então nunca aparecem como texto literal — sem isto o
+  // Tailwind purga .g0–.g3 e os cards ficam sem fundo.
+  safelist: ['g0', 'g1', 'g2', 'g3'],
   theme: {
     extend: {
       colors: {

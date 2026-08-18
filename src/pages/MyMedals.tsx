@@ -59,7 +59,7 @@ export default function MyMedals() {
   }
 
   return (
-    <main className="mx-auto max-w-4xl px-5 pb-20 pt-4">
+    <main className="mx-auto max-w-4xl px-5 pb-24 pt-4">
       <h1 className="titulo-corrida">
         Minhas <span className="text-laranja">medalhas</span>
       </h1>

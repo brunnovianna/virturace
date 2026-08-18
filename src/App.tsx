@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import BottomNav from './components/BottomNav';
 import Header from './components/Header';
 import RequireAuth from './components/RequireAuth';
 import Login from './pages/Login';
@@ -46,6 +47,7 @@ export default function App() {
           }
         />
       </Routes>
+      <BottomNav />
     </div>
   );
 }
