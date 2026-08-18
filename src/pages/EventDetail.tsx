@@ -9,6 +9,7 @@ import { useUser } from '../contexts/Auth';
 import {
   firstName,
   formatDate,
+  formatRangeShort,
   modalityKindEmoji,
   modalityLabel,
   posterGradient,
@@ -99,17 +100,17 @@ export default function EventDetail() {
         </h1>
         <p className="mb-4 max-w-xl opacity-95">{data.description}</p>
 
-        <div className="mb-5 flex flex-wrap gap-7">
+        <div className="mb-5 flex flex-wrap gap-x-6 gap-y-3">
           <div>
-            <b className="block font-display text-2xl tabular-nums">
-              {formatDate(data.startDate)}–{formatDate(data.endDate)}
+            <b className="block font-display text-xl tabular-nums">
+              {formatRangeShort(data.startDate, data.endDate)}
             </b>
             <span className="text-xs uppercase tracking-wider opacity-85">
               período
             </span>
           </div>
           <div>
-            <b className="block font-display text-2xl tabular-nums">
+            <b className="block font-display text-xl tabular-nums">
               {data.registrations.length}
             </b>
             <span className="text-xs uppercase tracking-wider opacity-85">
@@ -117,7 +118,7 @@ export default function EventDetail() {
             </span>
           </div>
           <div>
-            <b className="block font-display text-2xl tabular-nums">
+            <b className="block font-display text-xl tabular-nums">
               {completed.length}
             </b>
             <span className="text-xs uppercase tracking-wider opacity-85">

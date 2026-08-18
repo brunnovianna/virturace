@@ -70,6 +70,14 @@ const MONTHS_PT = [
   'jul', 'ago', 'set', 'out', 'nov', 'dez',
 ];
 
+/** Intervalo curto para o pôster: "22–31 ago" ou "28 ago–03 set". */
+export function formatRangeShort(startIso: string, endIso: string): string {
+  const p = dateRangeParts(startIso, endIso);
+  return p.sameMonth
+    ? `${p.startDay}–${p.endDay} ${p.startMon}`
+    : `${p.startDay} ${p.startMon}–${p.endDay} ${p.endMon}`;
+}
+
 /** Peças do bloco de data do card: dia inicial/final e mês(es) abreviados. */
 export function dateRangeParts(startIso: string, endIso: string) {
   const s = startIso.slice(0, 10).split('-');
