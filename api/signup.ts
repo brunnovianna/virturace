@@ -5,7 +5,7 @@ import {
   makeSessionToken,
   methodNotAllowed,
   readBody,
-} from './_shared';
+} from './_shared.js';
 
 const INSERT_USER = `
   mutation InsertUser($name: String!, $email: String!, $passwordHash: String!) {
