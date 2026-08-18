@@ -2,6 +2,17 @@ import { useState, type FormEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { login, signup } from '../api/session';
 import { useAuth } from '../contexts/Auth';
+import logoOriginal from '../assets/logo-original.png';
+import logoBranco from '../assets/logo-branco.png';
+import logoAmarelo from '../assets/logo-amarelo.png';
+
+// Comparação temporária das três versões do logo na home deslogada.
+// O Brunno escolhe qual fica; depois removemos as outras duas.
+const OPCOES_LOGO = [
+  { src: logoOriginal, nome: 'Original' },
+  { src: logoBranco, nome: 'Branco' },
+  { src: logoAmarelo, nome: 'Amarelo' },
+];
 
 export default function Login() {
   const [mode, setMode] = useState<'entrar' | 'cadastro'>('entrar');
@@ -36,9 +47,23 @@ export default function Login() {
   return (
     <main className="mx-auto max-w-4xl px-5 pb-20 pt-14">
       <div className="mb-7 text-center">
-        <span className="inline-block -rotate-2 font-display text-4xl text-amarelo">
-          VirtuRace
-        </span>
+        <div className="mb-6 grid gap-4 sm:grid-cols-3">
+          {OPCOES_LOGO.map((opcao) => (
+            <figure
+              key={opcao.nome}
+              className="rounded-2xl bg-palco p-4"
+            >
+              <img
+                src={opcao.src}
+                alt={`Logo VirtuRace — versão ${opcao.nome}`}
+                className="mx-auto h-auto w-full max-w-[220px]"
+              />
+              <figcaption className="mt-2 text-xs font-semibold text-papel-suave">
+                {opcao.nome}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
         <h1 className="titulo-corrida mt-1 text-center">
           Bora correr <span className="text-laranja">por aí?</span>
         </h1>
