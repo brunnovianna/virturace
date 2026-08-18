@@ -1,70 +1,33 @@
 {
-  "items": [
+  "users": [
     {
-      "id": "1",
-      "text": "Leite integral",
-      "creationTime": "2024-09-07T10:31:00.000Z",
-      "checked": true
-    },
-    {
-      "id": "2",
-      "text": "Açucar",
-      "creationTime": "2025-09-07T10:31:00.000Z",
-      "checked": true
-    },
-    {
-      "id": "3",
-      "text": "Ovos (dúzia)",
-      "creationTime": "2025-09-07T11:15:00.000Z",
-      "checked": false
-    },
-    {
-      "id": "4",
-      "text": "Arroz 5kg",
-      "creationTime": "2025-09-07T11:16:00.000Z",
-      "checked": false
-    },
-    {
-      "id": "5",
-      "text": "Feijão preto",
-      "creationTime": "2025-09-07T11:17:00.000Z",
-      "checked": true
-    },
-    {
-      "id": "6",
-      "text": "Banana nanica",
-      "creationTime": "2025-09-08T08:20:00.000Z",
-      "checked": false
-    },
-    {
-      "id": "7",
-      "text": "Detergente",
-      "creationTime": "2025-09-08T08:21:00.000Z",
-      "checked": false
-    },
-    {
-      "id": "8",
-      "text": "Papel higiênico",
-      "creationTime": "2025-09-08T08:22:00.000Z",
-      "checked": true
-    },
-    {
-      "id": "9",
-      "text": "Maçã vermelha",
-      "creationTime": "2025-09-08T09:10:00.000Z",
-      "checked": false
-    },
-    {
-      "id": "10",
-      "text": "Azeite extravirgens",
-      "creationTime": "2025-09-08T09:11:00.000Z",
-      "checked": false
-    },
-    {
-      "id": 1758652376765,
-      "text": "fffff",
-      "checked": false,
-      "creationTime": "2025-09-23T18:32:56.765Z"
+      "id": "u1",
+      "name": "Ana Corredora",
+      "email": "ana@example.com",
+      "password": "123456"
     }
-  ]
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "name": "Desafio 5K de Primavera",
+      "description": "Corra 5km onde você estiver e registre sua conquista. Aberto para todos os níveis!",
+      "distanceKm": 5,
+      "startDate": "2026-09-01",
+      "endDate": "2026-09-30",
+      "createdBy": "u1",
+      "createdAt": "2026-08-10T12:00:00.000Z"
+    },
+    {
+      "id": "e2",
+      "name": "Meia Maratona Virtual",
+      "description": "21km no seu ritmo, no seu percurso favorito. Complete dentro do período do evento.",
+      "distanceKm": 21.1,
+      "startDate": "2026-10-01",
+      "endDate": "2026-10-15",
+      "createdBy": "u1",
+      "createdAt": "2026-08-12T09:30:00.000Z"
+    }
+  ],
+  "registrations": []
 }

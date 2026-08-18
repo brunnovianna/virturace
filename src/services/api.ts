@@ -1,12 +1,5 @@
-import axios from "axios";
+import axios from 'axios';
 
-const api = axios.create({
-    baseURL: '/api/',
-    // timeout: 7000,
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    responseType: 'json'
+export const api = axios.create({
+  baseURL: '/api',
 });
-
-export default api;

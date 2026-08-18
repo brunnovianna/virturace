@@ -1,23 +1,29 @@
-export interface ListItem {
-    id: number;
-    text: string;
-    creationTime: Date;
-    checked: boolean;
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
 }
 
-export interface ResponseOK<T> {
-    status: "ok";
-    data: T;
+export interface RaceEvent {
+  id: string;
+  name: string;
+  description: string;
+  distanceKm: number;
+  startDate: string;
+  endDate: string;
+  createdBy: string;
+  createdAt: string;
 }
 
-export interface errorTypes {
-    code?: string
-    response?: {
-        status: number
-    }
-}
+export type RegistrationStatus = 'registered' | 'completed';
 
-export interface ResponseError {
-    status: 'error';
-    error: string;
+export interface Registration {
+  id: string;
+  eventId: string;
+  userId: string;
+  registeredAt: string;
+  status: RegistrationStatus;
+  completedAt?: string;
+  proofPhoto?: string;
 }
