@@ -1,5 +1,20 @@
 import { graphqlClient } from './graphql';
-import type { EventDetail, EventSummary } from '../types';
+import type { EventDetail, EventSummary, Modality, ModalityKind } from '../types';
+import { sortModalities } from '../utils';
+
+interface ModalityRow {
+  id: string;
+  kind: string;
+  distance_km: string | number;
+}
+
+function toModality(row: ModalityRow): Modality {
+  return {
+    id: row.id,
+    kind: row.kind === 'walk' ? 'walk' : 'run',
+    distanceKm: Number(row.distance_km),
+  };
+}
 
 const EVENTS_QUERY = `
   query Events {
@@ -7,9 +22,13 @@ const EVENTS_QUERY = `
       id
       name
       description
-      distance_km
       start_date
       end_date
+      modalities {
+        id
+        kind
+        distance_km
+      }
       registrations {
         user_id
         status
@@ -22,9 +41,9 @@ interface EventsRow {
   id: string;
   name: string;
   description: string;
-  distance_km: string | number;
   start_date: string;
   end_date: string;
+  modalities: ModalityRow[];
   registrations: Array<{ user_id: string; status: string }>;
 }
 
@@ -36,7 +55,7 @@ export async function listEvents(myUserId: string): Promise<EventSummary[]> {
     id: row.id,
     name: row.name,
     description: row.description,
-    distanceKm: Number(row.distance_km),
+    modalities: sortModalities(row.modalities.map(toModality)),
     startDate: row.start_date,
     endDate: row.end_date,
     registrationCount: row.registrations.length,
@@ -52,11 +71,15 @@ const EVENT_QUERY = `
       id
       name
       description
-      distance_km
       start_date
       end_date
       creator {
         name
+      }
+      modalities {
+        id
+        kind
+        distance_km
       }
       registrations(order_by: { registered_at: asc }) {
         id
@@ -66,6 +89,11 @@ const EVENT_QUERY = `
         proof_photo
         user {
           name
+        }
+        modality {
+          id
+          kind
+          distance_km
         }
       }
     }
@@ -81,6 +109,7 @@ interface EventRow extends Omit<EventsRow, 'registrations'> {
     completed_at: string | null;
     proof_photo: string | null;
     user: { name: string } | null;
+    modality: ModalityRow | null;
   }>;
 }
 
@@ -95,7 +124,7 @@ export async function getEvent(id: string): Promise<EventDetail | null> {
     id: row.id,
     name: row.name,
     description: row.description,
-    distanceKm: Number(row.distance_km),
+    modalities: sortModalities(row.modalities.map(toModality)),
     startDate: row.start_date,
     endDate: row.end_date,
     creatorName: row.creator?.name ?? null,
@@ -106,6 +135,7 @@ export async function getEvent(id: string): Promise<EventDetail | null> {
       status: r.status === 'completed' ? 'completed' : 'registered',
       completedAt: r.completed_at,
       proofPhoto: r.proof_photo,
+      modality: r.modality ? toModality(r.modality) : null,
     })),
   };
 }
@@ -114,17 +144,17 @@ const CREATE_EVENT = `
   mutation CreateEvent(
     $name: String!
     $description: String!
-    $distanceKm: numeric!
     $startDate: date!
     $endDate: date!
+    $modalities: [event_modalities_insert_input!]!
   ) {
     insert_events_one(
       object: {
         name: $name
         description: $description
-        distance_km: $distanceKm
         start_date: $startDate
         end_date: $endDate
+        modalities: { data: $modalities }
       }
     ) {
       id
@@ -132,15 +162,29 @@ const CREATE_EVENT = `
   }
 `;
 
+export interface ModalityInput {
+  kind: ModalityKind;
+  distanceKm: number;
+}
+
 export async function createEvent(input: {
   name: string;
   description: string;
-  distanceKm: number;
   startDate: string;
   endDate: string;
+  modalities: ModalityInput[];
 }): Promise<string> {
   const data = await graphqlClient.request<{
     insert_events_one: { id: string };
-  }>(CREATE_EVENT, input);
+  }>(CREATE_EVENT, {
+    name: input.name,
+    description: input.description,
+    startDate: input.startDate,
+    endDate: input.endDate,
+    modalities: input.modalities.map((m) => ({
+      kind: m.kind,
+      distance_km: m.distanceKm,
+    })),
+  });
   return data.insert_events_one.id;
 }

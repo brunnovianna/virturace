@@ -3,7 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { listEvents } from '../api/events';
 import { gqlErrorMessage } from '../api/graphql';
 import { useUser } from '../contexts/Auth';
-import { formatDate, formatKm, posterGradient } from '../utils';
+import {
+  formatDate,
+  modalityKindEmoji,
+  modalityLabel,
+  posterGradient,
+} from '../utils';
 
 export default function EventList() {
   const user = useUser();
@@ -48,8 +53,14 @@ export default function EventList() {
                 {event.name}
               </h3>
               <span className="text-sm opacity-90">
-                {formatKm(event.distanceKm)} · {formatDate(event.startDate)} a{' '}
-                {formatDate(event.endDate)}
+                {formatDate(event.startDate)} a {formatDate(event.endDate)}
+              </span>
+              <span className="flex flex-wrap gap-1.5">
+                {event.modalities.map((m) => (
+                  <span key={m.id} className="chip-corrida">
+                    {modalityKindEmoji(m.kind)} {modalityLabel(m)}
+                  </span>
+                ))}
               </span>
               <span className="mt-auto flex flex-wrap items-center gap-2">
                 <span className="chip-corrida">

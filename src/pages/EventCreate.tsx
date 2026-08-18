@@ -1,19 +1,49 @@
 import { useState, type FormEvent } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { createEvent } from '../api/events';
+import { createEvent, type ModalityInput } from '../api/events';
 import { gqlErrorMessage } from '../api/graphql';
+import type { ModalityKind } from '../types';
+
+interface ModalityDraft {
+  kind: ModalityKind;
+  distanceKm: string;
+}
+
+let modalityKey = 0;
+const newDraft = (kind: ModalityKind, distanceKm: string) => ({
+  key: modalityKey++,
+  draft: { kind, distanceKm } as ModalityDraft,
+});
 
 export default function EventCreate() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [distanceKm, setDistanceKm] = useState('5');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [modalities, setModalities] = useState(() => [
+    newDraft('run', '5'),
+  ]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  function updateModality(key: number, patch: Partial<ModalityDraft>) {
+    setModalities((rows) =>
+      rows.map((r) =>
+        r.key === key ? { ...r, draft: { ...r.draft, ...patch } } : r
+      )
+    );
+  }
+
+  function addModality() {
+    setModalities((rows) => [...rows, newDraft('run', '')]);
+  }
+
+  function removeModality(key: number) {
+    setModalities((rows) => rows.filter((r) => r.key !== key));
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -22,14 +52,27 @@ export default function EventCreate() {
       setError('A data final precisa ser depois do começo.');
       return;
     }
+    const parsed: ModalityInput[] = [];
+    for (const { draft } of modalities) {
+      const km = Number(draft.distanceKm);
+      if (!Number.isFinite(km) || km <= 0) {
+        setError('Cada modalidade precisa de uma distância maior que zero.');
+        return;
+      }
+      parsed.push({ kind: draft.kind, distanceKm: km });
+    }
+    if (parsed.length === 0) {
+      setError('Adicione pelo menos uma modalidade.');
+      return;
+    }
     setLoading(true);
     try {
       const id = await createEvent({
         name: name.trim(),
         description: description.trim(),
-        distanceKm: Number(distanceKm),
         startDate,
         endDate,
+        modalities: parsed,
       });
       queryClient.invalidateQueries({ queryKey: ['events'] });
       navigate(`/corrida/${id}`);
@@ -45,7 +88,7 @@ export default function EventCreate() {
         Monta a <span className="text-laranja">tua corrida</span>
       </h1>
       <p className="mb-7 max-w-lg text-papel-suave">
-        Invente a corrida: uma distância, um período, um convite. A turma faz o
+        Invente a corrida: as modalidades, um período, um convite. A turma faz o
         resto.
       </p>
 
@@ -77,20 +120,61 @@ export default function EventCreate() {
           required
           placeholder="Conte o clima da corrida — por que vai ser boa?"
         />
-        <label className="rotulo" htmlFor="c-km">
-          Distância (km)
-        </label>
-        <input
-          id="c-km"
-          className="campo"
-          type="number"
-          min="0.5"
-          step="0.1"
-          value={distanceKm}
-          onChange={(e) => setDistanceKm(e.target.value)}
-          required
-        />
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+        <span className="rotulo">Modalidades</span>
+        <p className="-mt-1 mb-2 text-xs text-papel-fraco">
+          Caminhada, corrida, várias distâncias — tudo junto na mesma prova.
+        </p>
+        <div className="flex flex-col gap-2.5">
+          {modalities.map(({ key, draft }, i) => (
+            <div key={key} className="flex items-center gap-2">
+              <select
+                aria-label={`Tipo da modalidade ${i + 1}`}
+                className="campo w-auto flex-none"
+                value={draft.kind}
+                onChange={(e) =>
+                  updateModality(key, { kind: e.target.value as ModalityKind })
+                }
+              >
+                <option value="run">🏃 Corrida</option>
+                <option value="walk">🚶 Caminhada</option>
+              </select>
+              <input
+                aria-label={`Distância da modalidade ${i + 1} em km`}
+                className="campo flex-1"
+                type="number"
+                min="0.5"
+                step="0.1"
+                inputMode="decimal"
+                value={draft.distanceKm}
+                onChange={(e) =>
+                  updateModality(key, { distanceKm: e.target.value })
+                }
+                required
+                placeholder="km"
+              />
+              {modalities.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeModality(key)}
+                  aria-label={`Remover modalidade ${i + 1}`}
+                  className="flex-none rounded-full bg-black/25 px-3 py-2 text-sm text-papel hover:bg-black/40"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={addModality}
+          className="mt-2.5 rounded-full border-2 border-roxo-claro px-4 py-1.5 text-sm font-semibold text-papel-suave hover:border-agua hover:text-agua"
+        >
+          + Mais uma modalidade
+        </button>
+
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label className="rotulo" htmlFor="c-ini">
               Começa em

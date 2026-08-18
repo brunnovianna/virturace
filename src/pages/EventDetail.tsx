@@ -3,10 +3,16 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { getEvent } from '../api/events';
 import { gqlErrorMessage } from '../api/graphql';
-import { registerForEvent } from '../api/registrations';
+import { registerForModality } from '../api/registrations';
 import Medal from '../components/Medal';
 import { useUser } from '../contexts/Auth';
-import { firstName, formatDate, formatKm, posterGradient } from '../utils';
+import {
+  firstName,
+  formatDate,
+  modalityKindEmoji,
+  modalityLabel,
+  posterGradient,
+} from '../utils';
 
 export default function EventDetail() {
   const { id = '' } = useParams<{ id: string }>();
@@ -14,17 +20,22 @@ export default function EventDetail() {
   const queryClient = useQueryClient();
   const [subscribing, setSubscribing] = useState(false);
   const [actionError, setActionError] = useState('');
+  const [chosenModality, setChosenModality] = useState('');
 
   const { data, error, isPending } = useQuery({
     queryKey: ['event', id],
     queryFn: () => getEvent(id),
   });
 
-  async function handleSubscribe() {
+  async function handleSubscribe(modalityId: string) {
+    if (!modalityId) {
+      setActionError('Escolha uma modalidade para entrar na pista.');
+      return;
+    }
     setActionError('');
     setSubscribing(true);
     try {
-      await registerForEvent(id);
+      await registerForModality(modalityId);
       await queryClient.invalidateQueries({ queryKey: ['event', id] });
       queryClient.invalidateQueries({ queryKey: ['events'] });
       queryClient.invalidateQueries({ queryKey: ['myRegistrations'] });
@@ -62,6 +73,9 @@ export default function EventDetail() {
   const gradIndex = data.id
     .split('')
     .reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+  const soloModality =
+    data.modalities.length === 1 ? data.modalities[0].id : '';
+  const selectedModality = chosenModality || soloModality;
 
   return (
     <main className="mx-auto max-w-4xl px-5 pb-20 pt-4">
@@ -73,7 +87,13 @@ export default function EventDetail() {
       </Link>
 
       <div className={`${posterGradient(gradIndex)} mt-3.5 rounded-3xl p-7`}>
-        <span className="chip-corrida">{formatKm(data.distanceKm)}</span>
+        <div className="flex flex-wrap gap-2">
+          {data.modalities.map((m) => (
+            <span key={m.id} className="chip-corrida">
+              {modalityKindEmoji(m.kind)} {modalityLabel(m)}
+            </span>
+          ))}
+        </div>
         <h1 className="my-2 -rotate-1 font-display text-3xl sm:text-4xl">
           {data.name}
         </h1>
@@ -107,18 +127,52 @@ export default function EventDetail() {
         </div>
 
         {!mine && (
-          <button
-            type="button"
-            onClick={handleSubscribe}
-            disabled={subscribing}
-            className="btn-corrida btn-corrida--agua"
-          >
-            {subscribing ? 'Entrando...' : 'Entrar na pista 🎉'}
-          </button>
+          <div className="max-w-sm">
+            {data.modalities.length > 1 && (
+              <>
+                <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider opacity-85">
+                  Sua modalidade
+                </span>
+                <div className="mb-3 flex flex-col gap-2">
+                  {data.modalities.map((m) => (
+                    <label
+                      key={m.id}
+                      className={`flex cursor-pointer items-center gap-2.5 rounded-2xl border-2 p-3 text-sm ${
+                        selectedModality === m.id
+                          ? 'border-amarelo bg-black/25'
+                          : 'border-white/25 hover:border-white/50'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="modality"
+                        className="accent-amarelo"
+                        checked={selectedModality === m.id}
+                        onChange={() => setChosenModality(m.id)}
+                      />
+                      <span>
+                        {modalityKindEmoji(m.kind)} {modalityLabel(m)}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </>
+            )}
+            <button
+              type="button"
+              onClick={() => handleSubscribe(selectedModality)}
+              disabled={subscribing}
+              className="btn-corrida btn-corrida--agua"
+            >
+              {subscribing ? 'Entrando...' : 'Entrar na pista 🎉'}
+            </button>
+          </div>
         )}
         {mine?.status === 'registered' && (
           <div className="rounded-2xl bg-black/25 p-4 text-sm text-white">
-            ✓ Você tá na pista! Quando terminar a corrida, envie sua foto em{' '}
+            ✓ Você tá na pista
+            {mine.modality ? ` na ${modalityLabel(mine.modality)}` : ''}! Quando
+            terminar a corrida, envie sua foto em{' '}
             <Link to="/medalhas" className="font-semibold text-amarelo">
               Minhas medalhas
             </Link>{' '}
@@ -127,8 +181,9 @@ export default function EventDetail() {
         )}
         {mine?.status === 'completed' && (
           <div className="rounded-2xl bg-black/25 p-4 text-sm text-white">
-            🏅 Você concluiu esta corrida! Sua medalha está no mural aqui
-            embaixo e em{' '}
+            🏅 Você concluiu esta corrida
+            {mine.modality ? ` (${modalityLabel(mine.modality)})` : ''}! Sua
+            medalha está no mural aqui embaixo e em{' '}
             <Link to="/medalhas" className="font-semibold text-amarelo">
               Minhas medalhas
             </Link>
@@ -157,7 +212,13 @@ export default function EventDetail() {
                 key={r.id}
                 name={firstName(r.userName)}
                 photo={r.proofPhoto}
-                caption={`concluiu em ${formatDate(r.completedAt)}`}
+                caption={
+                  r.modality
+                    ? `${modalityLabel(r.modality)} · ${formatDate(
+                        r.completedAt
+                      )}`
+                    : `concluiu em ${formatDate(r.completedAt)}`
+                }
               />
             ))}
           </div>

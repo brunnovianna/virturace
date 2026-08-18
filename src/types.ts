@@ -6,11 +6,20 @@ export interface SessionUser {
 
 export type RegistrationStatus = 'registered' | 'completed';
 
+/** Tipo da modalidade: caminhada ou corrida. Neutro no banco ('walk'/'run'). */
+export type ModalityKind = 'walk' | 'run';
+
+export interface Modality {
+  id: string;
+  kind: ModalityKind;
+  distanceKm: number;
+}
+
 export interface EventSummary {
   id: string;
   name: string;
   description: string;
-  distanceKm: number;
+  modalities: Modality[];
   startDate: string;
   endDate: string;
   registrationCount: number;
@@ -25,13 +34,14 @@ export interface EventRegistration {
   status: RegistrationStatus;
   completedAt: string | null;
   proofPhoto: string | null;
+  modality: Modality | null;
 }
 
 export interface EventDetail {
   id: string;
   name: string;
   description: string;
-  distanceKm: number;
+  modalities: Modality[];
   startDate: string;
   endDate: string;
   creatorName: string | null;
@@ -43,10 +53,10 @@ export interface MyRegistration {
   status: RegistrationStatus;
   completedAt: string | null;
   proofPhoto: string | null;
+  modality: Modality | null;
   event: {
     id: string;
     name: string;
-    distanceKm: number;
     startDate: string;
     endDate: string;
   };

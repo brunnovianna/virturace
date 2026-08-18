@@ -54,6 +54,15 @@
                     "column": "event_id"
                   }
                 }
+              },
+              {
+                "name": "modalities",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "table": { "schema": "public", "name": "event_modalities" },
+                    "column": "event_id"
+                  }
+                }
               }
             ],
             "insert_permissions": [
@@ -92,11 +101,55 @@
             ]
           },
           {
+            "table": { "schema": "public", "name": "event_modalities" },
+            "object_relationships": [
+              {
+                "name": "event",
+                "using": { "foreign_key_constraint_on": "event_id" }
+              }
+            ],
+            "array_relationships": [
+              {
+                "name": "registrations",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "table": { "schema": "public", "name": "registrations" },
+                    "column": "modality_id"
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "runner",
+                "permission": {
+                  "check": {
+                    "event": { "created_by": { "_eq": "X-Hasura-User-Id" } }
+                  },
+                  "columns": ["event_id", "kind", "distance_km"]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "runner",
+                "permission": {
+                  "columns": ["id", "event_id", "kind", "distance_km"],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
             "table": { "schema": "public", "name": "registrations" },
             "object_relationships": [
               {
                 "name": "event",
                 "using": { "foreign_key_constraint_on": "event_id" }
+              },
+              {
+                "name": "modality",
+                "using": { "foreign_key_constraint_on": "modality_id" }
               },
               {
                 "name": "user",
@@ -109,7 +162,7 @@
                 "permission": {
                   "check": {},
                   "set": { "user_id": "x-hasura-user-id" },
-                  "columns": ["event_id"]
+                  "columns": ["event_id", "modality_id"]
                 }
               }
             ],

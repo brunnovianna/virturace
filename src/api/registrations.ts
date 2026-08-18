@@ -11,10 +11,14 @@ const MY_REGISTRATIONS = `
       status
       completed_at
       proof_photo
+      modality {
+        id
+        kind
+        distance_km
+      }
       event {
         id
         name
-        distance_km
         start_date
         end_date
       }
@@ -27,10 +31,14 @@ interface MyRegRow {
   status: string;
   completed_at: string | null;
   proof_photo: string | null;
+  modality: {
+    id: string;
+    kind: string;
+    distance_km: string | number;
+  } | null;
   event: {
     id: string;
     name: string;
-    distance_km: string | number;
     start_date: string;
     end_date: string;
   };
@@ -48,10 +56,16 @@ export async function listMyRegistrations(
     status: r.status === 'completed' ? 'completed' : 'registered',
     completedAt: r.completed_at,
     proofPhoto: r.proof_photo,
+    modality: r.modality
+      ? {
+          id: r.modality.id,
+          kind: r.modality.kind === 'walk' ? 'walk' : 'run',
+          distanceKm: Number(r.modality.distance_km),
+        }
+      : null,
     event: {
       id: r.event.id,
       name: r.event.name,
-      distanceKm: Number(r.event.distance_km),
       startDate: r.event.start_date,
       endDate: r.event.end_date,
     },
@@ -59,15 +73,15 @@ export async function listMyRegistrations(
 }
 
 const REGISTER = `
-  mutation Register($eventId: uuid!) {
-    insert_registrations_one(object: { event_id: $eventId }) {
+  mutation Register($modalityId: uuid!) {
+    insert_registrations_one(object: { modality_id: $modalityId }) {
       id
     }
   }
 `;
 
-export async function registerForEvent(eventId: string): Promise<void> {
-  await graphqlClient.request(REGISTER, { eventId });
+export async function registerForModality(modalityId: string): Promise<void> {
+  await graphqlClient.request(REGISTER, { modalityId });
 }
 
 const COMPLETE = `
