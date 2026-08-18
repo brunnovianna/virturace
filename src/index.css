@@ -28,9 +28,10 @@ body {
   .btn-corrida {
     @apply inline-block cursor-pointer rounded-full bg-laranja px-6 py-2.5 font-display text-lg tracking-wide transition-transform;
     color: #3c1a00;
+    transform: rotate(-1deg);
   }
   .btn-corrida:hover:not(:disabled) {
-    transform: scale(1.04);
+    transform: rotate(-1deg) scale(1.04);
   }
   .btn-corrida:disabled {
     @apply cursor-wait opacity-60;
