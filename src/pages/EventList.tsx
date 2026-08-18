@@ -48,19 +48,19 @@ export default function EventList() {
                 <Link
                   to={`/corrida/${event.id}`}
                   aria-label={`Abrir ${event.name}`}
-                  className="absolute inset-0 z-0"
+                  className="absolute inset-0 z-10"
                 />
                 {mine && (
                   <Link
                     to={`/corrida/${event.id}/editar`}
                     aria-label={`Editar ${event.name}`}
                     title="Editar corrida"
-                    className="absolute right-2.5 top-2.5 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-base text-white no-underline transition hover:bg-black/50"
+                    className="absolute right-2.5 top-2.5 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-base text-white no-underline transition hover:bg-black/50"
                   >
                     ✏️
                   </Link>
                 )}
-                <div className="relative z-0 flex flex-1 gap-3.5 p-4">
+                <div className="pointer-events-none relative z-0 flex flex-1 gap-3.5 p-4">
                   <div className="flex flex-none flex-col items-center justify-center rounded-2xl bg-black/25 px-3 py-2.5 text-papel">
                     <span className="font-display text-2xl leading-none">
                       {dt.startDay}
