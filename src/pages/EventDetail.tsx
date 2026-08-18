@@ -79,7 +79,7 @@ export default function EventDetail() {
   const selectedModality = chosenModality || soloModality;
 
   return (
-    <main className="mx-auto max-w-4xl px-5 pb-20 pt-4">
+    <main className="mx-auto max-w-4xl px-5 pb-24 pt-4">
       <Link
         to="/"
         className="text-sm font-semibold text-agua no-underline hover:underline"

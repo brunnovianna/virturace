@@ -14,7 +14,7 @@ export default function EventList() {
   });
 
   return (
-    <main className="mx-auto max-w-4xl px-5 pb-20 pt-4">
+    <main className="mx-auto max-w-4xl px-5 pb-24 pt-4">
       <h1 className="titulo-corrida">
         Corridas na <span className="text-laranja">pista</span>
       </h1>
