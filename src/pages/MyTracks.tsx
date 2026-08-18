@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { listMyCreatedEvents } from '../api/events';
 import { gqlErrorMessage } from '../api/graphql';
 import {
@@ -37,6 +37,7 @@ function todayIso(): string {
 
 export default function MyTracks() {
   const user = useUser();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -134,7 +135,8 @@ export default function MyTracks() {
     return (
       <div
         key={t.eventId}
-        className="flex flex-wrap items-center gap-4 rounded-3xl bg-palco p-5"
+        onClick={() => navigate(`/corrida/${t.eventId}`)}
+        className="flex cursor-pointer flex-wrap items-center gap-4 rounded-3xl bg-palco p-5 transition-colors hover:bg-palco-2"
       >
         <div className="min-w-[190px] flex-1">
           <h3 className="font-display text-lg">
@@ -188,8 +190,11 @@ export default function MyTracks() {
             caption={`em ${formatDate(reg.completedAt)}`}
           />
         ) : reg ? (
-          <label className="btn-corrida cursor-pointer text-base">
-            {uploadingId === reg.id ? 'Cunhando...' : '📷 Cunhar minha medalha'}
+          <label
+            className="btn-corrida cursor-pointer text-base"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {uploadingId === reg.id ? 'Enviando...' : '📷 Finalizei'}
             <input
               type="file"
               accept="image/*"
