@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import EventList from './pages/EventList';
 import EventCreate from './pages/EventCreate';
 import EventDetail from './pages/EventDetail';
+import EventEdit from './pages/EventEdit';
 import MyTracks from './pages/MyTracks';
 
 export default function App() {
@@ -35,6 +36,14 @@ export default function App() {
           element={
             <RequireAuth>
               <EventDetail />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/corrida/:id/editar"
+          element={
+            <RequireAuth>
+              <EventEdit />
             </RequireAuth>
           }
         />

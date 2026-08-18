@@ -25,6 +25,7 @@ export interface EventSummary {
   registrationCount: number;
   completedCount: number;
   amRegistered: boolean;
+  creatorId: string;
 }
 
 export interface EventRegistration {
@@ -44,6 +45,7 @@ export interface EventDetail {
   modalities: Modality[];
   startDate: string;
   endDate: string;
+  creatorId: string;
   creatorName: string | null;
   registrations: EventRegistration[];
 }
