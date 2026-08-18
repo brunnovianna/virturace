@@ -1,120 +1,168 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
-import { getEvent } from '../services/events';
-import {
-  listRegistrationsByEvent,
-  registerForEvent,
-} from '../services/registrations';
-import { formatDate, formatDistance } from '../services/utils';
-import { useAuth } from '../contexts/Auth';
-import type { RaceEvent, Registration } from '../types';
+import { getEvent } from '../api/events';
+import { gqlErrorMessage } from '../api/graphql';
+import { registerForEvent } from '../api/registrations';
+import Medal from '../components/Medal';
+import { useUser } from '../contexts/Auth';
+import { firstName, formatDate, formatKm, posterGradient } from '../utils';
 
 export default function EventDetail() {
-  const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
-  const [event, setEvent] = useState<RaceEvent | null>(null);
-  const [registrations, setRegistrations] = useState<Registration[]>([]);
-  const [error, setError] = useState('');
+  const { id = '' } = useParams<{ id: string }>();
+  const user = useUser();
+  const queryClient = useQueryClient();
   const [subscribing, setSubscribing] = useState(false);
+  const [actionError, setActionError] = useState('');
 
-  const load = useCallback(async () => {
-    if (!id) return;
-    try {
-      const [ev, regs] = await Promise.all([
-        getEvent(id),
-        listRegistrationsByEvent(id),
-      ]);
-      setEvent(ev);
-      setRegistrations(regs);
-    } catch {
-      setError('Evento não encontrado.');
-    }
-  }, [id]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  if (error) return <p className="text-red-600">{error}</p>;
-  if (!event) return <p className="text-slate-500">Carregando evento...</p>;
-
-  const myRegistration = registrations.find((r) => r.userId === user?.id);
+  const { data, error, isPending } = useQuery({
+    queryKey: ['event', id],
+    queryFn: () => getEvent(id),
+  });
 
   async function handleSubscribe() {
-    if (!user || !event) return;
+    setActionError('');
     setSubscribing(true);
     try {
-      await registerForEvent(event.id, user.id);
-      await load();
-    } catch {
-      setError('Não foi possível concluir a inscrição.');
+      await registerForEvent(id);
+      await queryClient.invalidateQueries({ queryKey: ['event', id] });
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+      queryClient.invalidateQueries({ queryKey: ['myRegistrations'] });
+    } catch (err) {
+      setActionError(
+        gqlErrorMessage(err, 'Não deu para entrar na pista agora.')
+      );
     } finally {
       setSubscribing(false);
     }
   }
 
+  if (isPending) {
+    return (
+      <main className="mx-auto max-w-4xl px-5 pt-6">
+        <p className="text-papel-suave">Carregando a festa...</p>
+      </main>
+    );
+  }
+  if (error || !data) {
+    return (
+      <main className="mx-auto max-w-4xl px-5 pt-6">
+        <p className="text-[#ff6b6b]">
+          {error ? gqlErrorMessage(error) : 'Festa não encontrada.'}
+        </p>
+        <Link to="/" className="font-semibold text-agua underline">
+          ← Todas as festas
+        </Link>
+      </main>
+    );
+  }
+
+  const completed = data.registrations.filter((r) => r.status === 'completed');
+  const mine = data.registrations.find((r) => r.userId === user.id);
+  const gradIndex = data.id
+    .split('')
+    .reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+
   return (
-    <div className="mx-auto max-w-2xl">
-      <Link to="/" className="text-sm text-indigo-600 hover:underline">
-        ← Voltar aos eventos
+    <main className="mx-auto max-w-4xl px-5 pb-20 pt-4">
+      <Link
+        to="/"
+        className="text-sm font-semibold text-agua no-underline hover:underline"
+      >
+        ← Todas as festas
       </Link>
 
-      <div className="mt-4 rounded-xl bg-white p-6 shadow-sm">
-        <div className="mb-3 flex items-start justify-between gap-3">
-          <h1 className="text-2xl font-bold">{event.name}</h1>
-          <span className="shrink-0 rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
-            {formatDistance(event.distanceKm)}
-          </span>
+      <div className={`${posterGradient(gradIndex)} mt-3.5 rounded-3xl p-7`}>
+        <span className="chip-festa">{formatKm(data.distanceKm)}</span>
+        <h1 className="my-2 -rotate-1 font-display text-3xl sm:text-4xl">
+          {data.name}
+        </h1>
+        <p className="mb-4 max-w-xl opacity-95">{data.description}</p>
+
+        <div className="mb-5 flex flex-wrap gap-7">
+          <div>
+            <b className="block font-display text-2xl tabular-nums">
+              {formatDate(data.startDate)}–{formatDate(data.endDate)}
+            </b>
+            <span className="text-xs uppercase tracking-wider opacity-85">
+              período
+            </span>
+          </div>
+          <div>
+            <b className="block font-display text-2xl tabular-nums">
+              {data.registrations.length}
+            </b>
+            <span className="text-xs uppercase tracking-wider opacity-85">
+              na pista
+            </span>
+          </div>
+          <div>
+            <b className="block font-display text-2xl tabular-nums">
+              {completed.length}
+            </b>
+            <span className="text-xs uppercase tracking-wider opacity-85">
+              medalhas
+            </span>
+          </div>
         </div>
 
-        <p className="mb-4 text-slate-600">{event.description}</p>
-
-        <dl className="mb-6 grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
-          <div>
-            <dt className="text-slate-400">Período</dt>
-            <dd className="font-medium">
-              {formatDate(event.startDate)} – {formatDate(event.endDate)}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-slate-400">Inscritos</dt>
-            <dd className="font-medium">{registrations.length}</dd>
-          </div>
-          <div>
-            <dt className="text-slate-400">Concluíram</dt>
-            <dd className="font-medium">
-              {registrations.filter((r) => r.status === 'completed').length}
-            </dd>
-          </div>
-        </dl>
-
-        {myRegistration ? (
-          <div className="rounded-lg bg-emerald-50 p-4 text-sm">
-            {myRegistration.status === 'completed' ? (
-              <p className="font-medium text-emerald-700">
-                🏅 Você concluiu esta corrida!
-              </p>
-            ) : (
-              <p className="text-emerald-700">
-                ✓ Você está inscrito. Quando terminar sua corrida, envie a foto
-                de conclusão em{' '}
-                <Link to="/my" className="font-semibold underline">
-                  Minhas corridas
-                </Link>
-                .
-              </p>
-            )}
-          </div>
-        ) : (
+        {!mine && (
           <button
+            type="button"
             onClick={handleSubscribe}
             disabled={subscribing}
-            className="w-full rounded-md bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
+            className="btn-festa btn-festa--agua"
           >
-            {subscribing ? 'Inscrevendo...' : 'Inscrever-se'}
+            {subscribing ? 'Entrando...' : 'Entrar na pista 🎉'}
           </button>
         )}
+        {mine?.status === 'registered' && (
+          <div className="rounded-2xl bg-black/25 p-4 text-sm text-white">
+            ✓ Você tá na pista! Quando terminar a corrida, envie sua foto em{' '}
+            <Link to="/medalhas" className="font-semibold text-amarelo">
+              Minhas medalhas
+            </Link>{' '}
+            para cunhar a sua.
+          </div>
+        )}
+        {mine?.status === 'completed' && (
+          <div className="rounded-2xl bg-black/25 p-4 text-sm text-white">
+            🏅 Você concluiu esta corrida! Sua medalha está no mural aqui
+            embaixo e em{' '}
+            <Link to="/medalhas" className="font-semibold text-amarelo">
+              Minhas medalhas
+            </Link>
+            .
+          </div>
+        )}
+        {actionError && (
+          <p className="mt-3 text-sm text-[#ffb3b3]">{actionError}</p>
+        )}
+
+        {data.creatorName && (
+          <p className="mt-4 text-xs opacity-80">
+            Festa organizada por {firstName(data.creatorName)}
+          </p>
+        )}
       </div>
-    </div>
+
+      {completed.length > 0 && (
+        <>
+          <h2 className="mb-3.5 mt-9 -rotate-1 font-display text-2xl">
+            Mural de medalhas
+          </h2>
+          <div className="flex flex-wrap gap-4">
+            {completed.map((r) => (
+              <Medal
+                key={r.id}
+                name={firstName(r.userName)}
+                photo={r.proofPhoto}
+                caption={`concluiu em ${formatDate(r.completedAt)}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </main>
   );
 }

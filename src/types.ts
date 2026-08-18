@@ -1,29 +1,53 @@
-export interface User {
+export interface SessionUser {
   id: string;
   name: string;
   email: string;
-  password: string;
 }
 
-export interface RaceEvent {
+export type RegistrationStatus = 'registered' | 'completed';
+
+export interface EventSummary {
   id: string;
   name: string;
   description: string;
   distanceKm: number;
   startDate: string;
   endDate: string;
-  createdBy: string;
-  createdAt: string;
+  registrationCount: number;
+  completedCount: number;
+  amRegistered: boolean;
 }
 
-export type RegistrationStatus = 'registered' | 'completed';
-
-export interface Registration {
+export interface EventRegistration {
   id: string;
-  eventId: string;
   userId: string;
-  registeredAt: string;
+  userName: string;
   status: RegistrationStatus;
-  completedAt?: string;
-  proofPhoto?: string;
+  completedAt: string | null;
+  proofPhoto: string | null;
+}
+
+export interface EventDetail {
+  id: string;
+  name: string;
+  description: string;
+  distanceKm: number;
+  startDate: string;
+  endDate: string;
+  creatorName: string | null;
+  registrations: EventRegistration[];
+}
+
+export interface MyRegistration {
+  id: string;
+  status: RegistrationStatus;
+  completedAt: string | null;
+  proofPhoto: string | null;
+  event: {
+    id: string;
+    name: string;
+    distanceKm: number;
+    startDate: string;
+    endDate: string;
+  };
 }

@@ -1,62 +1,52 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/Auth';
+import { firstName } from '../utils';
 
-const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+const tabClass = ({ isActive }: { isActive: boolean }) =>
+  `rounded-full px-3.5 py-1.5 text-sm font-semibold no-underline ${
     isActive
-      ? 'bg-indigo-600 text-white'
-      : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+      ? 'bg-agua text-agua-escuro'
+      : 'text-papel-suave hover:bg-palco-2 hover:text-papel'
   }`;
 
 export default function Header() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
-  function handleSignOut() {
-    signOut();
-    navigate('/login');
-  }
+  if (!user) return null;
 
   return (
-    <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-3">
-        <Link to="/" className="text-xl font-bold text-indigo-600">
-          🏃 VirtuRace
-        </Link>
-        {user && (
-          <nav className="flex items-center gap-1">
-            <NavLink to="/" end className={navLinkClass}>
-              Eventos
-            </NavLink>
-            <NavLink to="/events/new" className={navLinkClass}>
-              Criar evento
-            </NavLink>
-            <NavLink to="/my" className={navLinkClass}>
-              Minhas corridas
-            </NavLink>
-          </nav>
-        )}
-        {user ? (
-          <div className="flex items-center gap-3">
-            <span className="hidden text-sm text-slate-500 sm:inline">
-              Olá, {user.name.split(' ')[0]}
-            </span>
-            <button
-              onClick={handleSignOut}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
-            >
-              Sair
-            </button>
-          </div>
-        ) : (
-          <Link
-            to="/login"
-            className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
-          >
-            Entrar
-          </Link>
-        )}
+    <nav className="mx-auto flex max-w-4xl flex-wrap items-center gap-2.5 px-5 py-3.5">
+      <Link
+        to="/"
+        className="mr-1.5 inline-block -rotate-2 font-display text-2xl text-amarelo no-underline"
+      >
+        VirtuRace
+      </Link>
+      <div className="flex flex-wrap gap-1.5">
+        <NavLink to="/" end className={tabClass}>
+          Festas
+        </NavLink>
+        <NavLink to="/criar" className={tabClass}>
+          Criar festa
+        </NavLink>
+        <NavLink to="/medalhas" className={tabClass}>
+          Minhas medalhas
+        </NavLink>
       </div>
-    </header>
+      <div className="ml-auto flex items-center gap-2.5 text-sm text-papel-suave">
+        <span className="hidden sm:inline">Oi, {firstName(user.name)}!</span>
+        <button
+          type="button"
+          onClick={() => {
+            signOut();
+            navigate('/login');
+          }}
+          className="rounded-full border border-roxo-claro px-3.5 py-1.5 text-sm font-semibold text-papel-suave hover:border-agua hover:text-agua"
+        >
+          Sair
+        </button>
+      </div>
+    </nav>
   );
 }

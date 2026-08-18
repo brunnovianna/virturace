@@ -5,38 +5,25 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { User } from '../types';
-
-const STORAGE_KEY = 'virturace:user';
+import { getToken, logout, userFromToken } from '../api/session';
+import type { SessionUser } from '../types';
 
 interface AuthContextValue {
-  user: User | null;
-  signIn: (user: User) => void;
+  user: SessionUser | null;
+  signIn: (user: SessionUser) => void;
   signOut: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function loadStoredUser(): User | null {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as User;
-  } catch {
-    return null;
-  }
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(loadStoredUser);
+  const [user, setUser] = useState<SessionUser | null>(() =>
+    userFromToken(getToken())
+  );
 
-  const signIn = useCallback((next: User) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    setUser(next);
-  }, []);
-
+  const signIn = useCallback((next: SessionUser) => setUser(next), []);
   const signOut = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY);
+    logout();
     setUser(null);
   }, []);
 
@@ -51,4 +38,11 @@ export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth deve ser usado dentro de AuthProvider');
   return ctx;
+}
+
+/** O usuário logado — usar só em páginas protegidas por RequireAuth. */
+export function useUser(): SessionUser {
+  const { user } = useAuth();
+  if (!user) throw new Error('useUser em rota sem RequireAuth');
+  return user;
 }

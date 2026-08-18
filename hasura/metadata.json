@@ -1,0 +1,152 @@
+{
+  "resource_version": 1,
+  "metadata": {
+    "version": 3,
+    "sources": [
+      {
+        "name": "default",
+        "kind": "postgres",
+        "configuration": {
+          "connection_info": {
+            "database_url": { "from_env": "PG_DATABASE_URL" },
+            "isolation_level": "read-committed",
+            "use_prepared_statements": false
+          }
+        },
+        "tables": [
+          {
+            "table": { "schema": "public", "name": "users" },
+            "array_relationships": [
+              {
+                "name": "registrations",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "table": { "schema": "public", "name": "registrations" },
+                    "column": "user_id"
+                  }
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "runner",
+                "permission": {
+                  "columns": ["id", "name"],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": { "schema": "public", "name": "events" },
+            "object_relationships": [
+              {
+                "name": "creator",
+                "using": { "foreign_key_constraint_on": "created_by" }
+              }
+            ],
+            "array_relationships": [
+              {
+                "name": "registrations",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "table": { "schema": "public", "name": "registrations" },
+                    "column": "event_id"
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "runner",
+                "permission": {
+                  "check": {},
+                  "set": { "created_by": "x-hasura-user-id" },
+                  "columns": [
+                    "name",
+                    "description",
+                    "distance_km",
+                    "start_date",
+                    "end_date"
+                  ]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "runner",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "name",
+                    "description",
+                    "distance_km",
+                    "start_date",
+                    "end_date",
+                    "created_by",
+                    "created_at"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": { "schema": "public", "name": "registrations" },
+            "object_relationships": [
+              {
+                "name": "event",
+                "using": { "foreign_key_constraint_on": "event_id" }
+              },
+              {
+                "name": "user",
+                "using": { "foreign_key_constraint_on": "user_id" }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "runner",
+                "permission": {
+                  "check": {},
+                  "set": { "user_id": "x-hasura-user-id" },
+                  "columns": ["event_id"]
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "runner",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "event_id",
+                    "user_id",
+                    "status",
+                    "registered_at",
+                    "completed_at",
+                    "proof_photo"
+                  ],
+                  "filter": {},
+                  "allow_aggregations": true
+                }
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "runner",
+                "permission": {
+                  "columns": ["status", "completed_at", "proof_photo"],
+                  "filter": {
+                    "user_id": { "_eq": "X-Hasura-User-Id" },
+                    "status": { "_eq": "registered" }
+                  },
+                  "check": { "status": { "_eq": "completed" } }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

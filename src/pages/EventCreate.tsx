@@ -1,10 +1,8 @@
 import { useState, type FormEvent } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { createEvent } from '../services/events';
-import { useAuth } from '../contexts/Auth';
-
-const inputClass =
-  'w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500';
+import { createEvent } from '../api/events';
+import { gqlErrorMessage } from '../api/graphql';
 
 export default function EventCreate() {
   const [name, setName] = useState('');
@@ -14,82 +12,92 @@ export default function EventCreate() {
   const [endDate, setEndDate] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError('');
     if (endDate < startDate) {
-      setError('A data final deve ser depois da data inicial.');
+      setError('A data final precisa ser depois do começo.');
       return;
     }
     setLoading(true);
     try {
-      const event = await createEvent({
-        name,
-        description,
+      const id = await createEvent({
+        name: name.trim(),
+        description: description.trim(),
         distanceKm: Number(distanceKm),
         startDate,
         endDate,
-        createdBy: user!.id,
       });
-      navigate(`/events/${event.id}`);
-    } catch {
-      setError('Não foi possível criar o evento.');
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+      navigate(`/festa/${id}`);
+    } catch (err) {
+      setError(gqlErrorMessage(err, 'Não foi possível criar a festa agora.'));
       setLoading(false);
     }
   }
 
   return (
-    <div className="mx-auto max-w-lg">
-      <h1 className="mb-6 text-2xl font-bold">Criar evento</h1>
+    <main className="mx-auto max-w-4xl px-5 pb-20 pt-4">
+      <h1 className="titulo-festa">
+        Monta a <span className="text-laranja">tua festa</span>
+      </h1>
+      <p className="mb-7 max-w-lg text-papel-suave">
+        Invente a corrida: uma distância, um período, um convite. A turma faz o
+        resto.
+      </p>
+
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 rounded-xl bg-white p-6 shadow-sm"
+        className="max-w-xl rounded-3xl bg-palco p-7"
       >
-        <div>
-          <label className="mb-1 block text-sm font-medium">
-            Nome do evento
-          </label>
-          <input
-            className={inputClass}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            placeholder="Ex.: Desafio 10K de Verão"
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium">Descrição</label>
-          <textarea
-            className={inputClass}
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            placeholder="Conte como funciona a corrida"
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium">
-            Distância (km)
-          </label>
-          <input
-            className={inputClass}
-            type="number"
-            min="0.1"
-            step="0.1"
-            value={distanceKm}
-            onChange={(e) => setDistanceKm(e.target.value)}
-            required
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
+        <label className="rotulo" htmlFor="c-nome">
+          Nome da corrida
+        </label>
+        <input
+          id="c-nome"
+          className="campo"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          maxLength={120}
+          placeholder="Ex.: Corrida do Sol Nascente"
+        />
+        <label className="rotulo" htmlFor="c-desc">
+          Convite (descrição)
+        </label>
+        <textarea
+          id="c-desc"
+          className="campo"
+          rows={3}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
+          placeholder="Conte o clima da corrida — por que vai ser boa?"
+        />
+        <label className="rotulo" htmlFor="c-km">
+          Distância (km)
+        </label>
+        <input
+          id="c-km"
+          className="campo"
+          type="number"
+          min="0.5"
+          step="0.1"
+          value={distanceKm}
+          onChange={(e) => setDistanceKm(e.target.value)}
+          required
+        />
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium">Início</label>
+            <label className="rotulo" htmlFor="c-ini">
+              Começa em
+            </label>
             <input
-              className={inputClass}
+              id="c-ini"
+              className="campo"
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
@@ -97,9 +105,12 @@ export default function EventCreate() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium">Fim</label>
+            <label className="rotulo" htmlFor="c-fim">
+              Termina em
+            </label>
             <input
-              className={inputClass}
+              id="c-fim"
+              className="campo"
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
@@ -108,16 +119,12 @@ export default function EventCreate() {
           </div>
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="mt-3 text-sm text-[#ff6b6b]">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-md bg-indigo-600 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
-        >
-          {loading ? 'Criando...' : 'Criar evento'}
+        <button type="submit" disabled={loading} className="btn-festa mt-5">
+          {loading ? 'Subindo o palco...' : 'Soltar o cartaz 🎉'}
         </button>
       </form>
-    </div>
+    </main>
   );
 }

@@ -3,5 +3,91 @@
 @tailwind utilities;
 
 body {
-  @apply bg-slate-100 text-slate-800 antialiased;
+  @apply bg-fundo font-sans text-papel antialiased;
+}
+
+@layer components {
+  /* Cartazes de evento — gradientes da paleta Festival de Rua */
+  .g0 {
+    background: linear-gradient(125deg, #2ec4b6, #ffd24a);
+    @apply text-agua-escuro;
+  }
+  .g1 {
+    background: linear-gradient(125deg, #5b2d9e, #2ec4b6);
+    @apply text-papel;
+  }
+  .g2 {
+    background: linear-gradient(125deg, #ff8a3d, #ffd24a);
+    color: #4c2404;
+  }
+  .g3 {
+    background: linear-gradient(125deg, #35206b, #ff8a3d);
+    @apply text-papel;
+  }
+
+  .btn-festa {
+    @apply inline-block cursor-pointer rounded-full bg-laranja px-6 py-2.5 font-display text-lg tracking-wide transition-transform;
+    color: #3c1a00;
+    transform: rotate(-1deg);
+  }
+  .btn-festa:hover:not(:disabled) {
+    transform: rotate(-1deg) scale(1.04);
+  }
+  .btn-festa:disabled {
+    @apply cursor-wait opacity-60;
+  }
+  .btn-festa--agua {
+    @apply bg-agua text-agua-escuro;
+  }
+
+  .campo {
+    @apply w-full rounded-xl border-2 border-roxo-claro bg-fundo px-3.5 py-2.5 text-[0.92rem] text-papel outline-none placeholder:text-papel-fraco focus:border-agua;
+  }
+  .rotulo {
+    @apply mb-1.5 mt-4 block text-[0.8rem] font-semibold text-papel-suave;
+  }
+
+  .chip-festa {
+    @apply whitespace-nowrap rounded-full bg-black/25 px-3 py-1 text-xs font-semibold text-white;
+  }
+  .chip-festa--sol {
+    @apply bg-amarelo text-amarelo-ink;
+    transform: rotate(2deg);
+  }
+
+  .titulo-festa {
+    @apply my-3 font-display text-4xl sm:text-[2.6rem];
+    transform: rotate(-1.2deg);
+    text-wrap: balance;
+  }
+}
+
+:focus-visible {
+  outline: 3px solid #ffd24a;
+  outline-offset: 2px;
+}
+
+/* Confete da conclusão */
+.confete {
+  position: fixed;
+  top: -20px;
+  z-index: 50;
+  pointer-events: none;
+  border-radius: 2px;
+  animation: confete-cair 2.6s linear forwards;
+}
+@keyframes confete-cair {
+  to {
+    transform: translateY(108vh) rotate(720deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .confete {
+    display: none;
+  }
+  .btn-festa,
+  .btn-festa:hover:not(:disabled) {
+    transition: none;
+    transform: none;
+  }
 }

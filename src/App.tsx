@@ -5,49 +5,47 @@ import Login from './pages/Login';
 import EventList from './pages/EventList';
 import EventCreate from './pages/EventCreate';
 import EventDetail from './pages/EventDetail';
-import MyRegistrations from './pages/MyRegistrations';
+import MyMedals from './pages/MyMedals';
 
 export default function App() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="mx-auto max-w-4xl px-4 py-8">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/"
-            element={
-              <RequireAuth>
-                <EventList />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/events/new"
-            element={
-              <RequireAuth>
-                <EventCreate />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/events/:id"
-            element={
-              <RequireAuth>
-                <EventDetail />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/my"
-            element={
-              <RequireAuth>
-                <MyRegistrations />
-              </RequireAuth>
-            }
-          />
-        </Routes>
-      </main>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            <RequireAuth>
+              <EventList />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/criar"
+          element={
+            <RequireAuth>
+              <EventCreate />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/festa/:id"
+          element={
+            <RequireAuth>
+              <EventDetail />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/medalhas"
+          element={
+            <RequireAuth>
+              <MyMedals />
+            </RequireAuth>
+          }
+        />
+      </Routes>
     </div>
   );
 }

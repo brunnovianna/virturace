@@ -20,4 +20,8 @@ export default [
       'react/react-in-jsx-scope': 'off',
     },
   },
+  {
+    files: ['api/**/*.ts'],
+    languageOptions: { globals: globals.node },
+  },
 ];

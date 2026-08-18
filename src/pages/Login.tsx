@@ -1,13 +1,10 @@
 import { useState, type FormEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { login, register } from '../services/auth';
+import { login, signup } from '../api/session';
 import { useAuth } from '../contexts/Auth';
 
-const inputClass =
-  'w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500';
-
 export default function Login() {
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [mode, setMode] = useState<'entrar' | 'cadastro'>('entrar');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,9 +20,9 @@ export default function Login() {
     setLoading(true);
     try {
       const user =
-        mode === 'login'
+        mode === 'entrar'
           ? await login(email, password)
-          : await register(name, email, password);
+          : await signup(name, email, password);
       signIn(user);
       const from = (location.state as { from?: string } | null)?.from ?? '/';
       navigate(from, { replace: true });
@@ -37,83 +34,95 @@ export default function Login() {
   }
 
   return (
-    <div className="mx-auto mt-16 max-w-sm rounded-xl bg-white p-8 shadow-sm">
-      <h1 className="mb-1 text-center text-2xl font-bold text-indigo-600">
-        🏃 VirtuRace
-      </h1>
-      <p className="mb-6 text-center text-sm text-slate-500">
-        {mode === 'login'
-          ? 'Entre para participar de corridas virtuais'
-          : 'Crie sua conta para começar a correr'}
-      </p>
+    <main className="mx-auto max-w-4xl px-5 pb-20 pt-14">
+      <div className="mb-7 text-center">
+        <span className="inline-block -rotate-2 font-display text-4xl text-amarelo">
+          VirtuRace
+        </span>
+        <h1 className="titulo-festa mt-1 text-center">
+          Bora correr <span className="text-laranja">por aí?</span>
+        </h1>
+        <p className="mx-auto max-w-md text-papel-suave">
+          Corridas virtuais com a turma: você corre onde estiver, manda a foto e
+          cunha sua medalha.
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {mode === 'register' && (
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto max-w-md rounded-3xl bg-palco p-7"
+      >
+        {mode === 'cadastro' && (
           <div>
-            <label className="mb-1 block text-sm font-medium">Nome</label>
+            <label className="rotulo" htmlFor="nome">
+              Seu nome
+            </label>
             <input
-              className={inputClass}
+              id="nome"
+              className="campo"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              placeholder="Seu nome"
+              maxLength={80}
+              placeholder="Como a turma te chama?"
             />
           </div>
         )}
-        <div>
-          <label className="mb-1 block text-sm font-medium">E-mail</label>
-          <input
-            className={inputClass}
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            placeholder="voce@email.com"
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium">Senha</label>
-          <input
-            className={inputClass}
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
-            placeholder="••••••"
-          />
-        </div>
+        <label className="rotulo" htmlFor="email">
+          E-mail
+        </label>
+        <input
+          id="email"
+          className="campo"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          placeholder="voce@email.com"
+        />
+        <label className="rotulo" htmlFor="senha">
+          Senha
+        </label>
+        <input
+          id="senha"
+          className="campo"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          minLength={6}
+          placeholder="••••••"
+        />
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="mt-3 text-sm text-[#ff6b6b]">{error}</p>}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-md bg-indigo-600 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
+          className="btn-festa mt-5 w-full"
         >
           {loading
-            ? 'Aguarde...'
-            : mode === 'login'
-              ? 'Entrar'
-              : 'Criar conta'}
+            ? 'Aguenta aí...'
+            : mode === 'entrar'
+              ? 'Entrar na festa'
+              : 'Criar minha conta 🎉'}
         </button>
+
+        <div className="text-center">
+          <button
+            type="button"
+            onClick={() => {
+              setMode(mode === 'entrar' ? 'cadastro' : 'entrar');
+              setError('');
+            }}
+            className="mt-4 text-sm font-medium text-agua underline"
+          >
+            {mode === 'entrar'
+              ? 'Primeira vez? Cadastre-se'
+              : 'Já tenho conta — entrar'}
+          </button>
+        </div>
       </form>
-
-      <button
-        onClick={() => {
-          setMode(mode === 'login' ? 'register' : 'login');
-          setError('');
-        }}
-        className="mt-4 w-full text-center text-sm text-indigo-600 hover:underline"
-      >
-        {mode === 'login'
-          ? 'Não tem conta? Cadastre-se'
-          : 'Já tem conta? Entre'}
-      </button>
-
-      <p className="mt-6 text-center text-xs text-slate-400">
-        Protótipo — use ana@example.com / 123456 para testar
-      </p>
-    </div>
+    </main>
   );
 }
