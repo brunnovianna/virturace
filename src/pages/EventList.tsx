@@ -99,9 +99,10 @@ export default function EventList() {
                       {groups.map((g) => (
                         <span
                           key={g.kind}
-                          className="rounded-full bg-white/20 px-2.5 py-1 text-sm font-semibold"
+                          className="rounded-full bg-white/20 px-2.5 py-1 text-sm"
                         >
-                          {g.emoji} {g.label}
+                          <b className="font-semibold">{g.kindLabel}</b>{' '}
+                          <span className="opacity-90">{g.label}</span>
                         </span>
                       ))}
                     </span>

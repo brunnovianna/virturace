@@ -48,7 +48,7 @@ export function joinKm(distances: number[]): string {
  */
 export function groupModalities(
   modalities: Modality[]
-): { kind: ModalityKind; emoji: string; label: string }[] {
+): { kind: ModalityKind; kindLabel: string; label: string }[] {
   const byKind = new Map<ModalityKind, number[]>();
   for (const m of sortModalities(modalities)) {
     const arr = byKind.get(m.kind) ?? [];
@@ -60,7 +60,7 @@ export function groupModalities(
     .filter((kind) => byKind.has(kind))
     .map((kind) => ({
       kind,
-      emoji: modalityKindEmoji(kind),
+      kindLabel: modalityKindLabel(kind),
       label: joinKm(byKind.get(kind) as number[]),
     }));
 }

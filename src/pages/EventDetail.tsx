@@ -10,7 +10,6 @@ import {
   firstName,
   formatDate,
   formatRangeShort,
-  modalityKindEmoji,
   modalityLabel,
   posterGradient,
 } from '../utils';
@@ -171,7 +170,7 @@ export default function EventDetail() {
         <div className="flex flex-wrap gap-2 pr-12">
           {data.modalities.map((m) => (
             <span key={m.id} className="chip-corrida">
-              {modalityKindEmoji(m.kind)} {modalityLabel(m)}
+              {modalityLabel(m)}
             </span>
           ))}
         </div>
@@ -243,7 +242,7 @@ export default function EventDetail() {
                         onChange={() => setChosenModality(m.id)}
                       />
                       <span>
-                        {modalityKindEmoji(m.kind)} {modalityLabel(m)}
+                        {modalityLabel(m)}
                       </span>
                     </label>
                   ))}
