@@ -36,7 +36,7 @@ objetos guardando só a URL.
 api/            funções serverless da Vercel (auth)
 hasura/         schema.sql (Neon) + metadata.json (permissões) + docs
 src/api/        client GraphQL e chamadas (events, registrations, session)
-src/pages/      Login, Corridas, Criar, Detalhe (+ mural), Minhas medalhas
+src/pages/      Login, Corridas, Criar, Detalhe (+ mural), Minhas pistas
 docs/SETUP.md   guia de provisionamento sem terminal
 ```
 

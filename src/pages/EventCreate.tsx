@@ -203,7 +203,7 @@ export default function EventCreate() {
         {error && <p className="mt-3 text-sm text-[#ff6b6b]">{error}</p>}
 
         <button type="submit" disabled={loading} className="btn-corrida mt-5">
-          {loading ? 'Subindo o palco...' : 'Soltar o cartaz 🎉'}
+          {loading ? 'Subindo o palco...' : 'Abrir a pista 🎉'}
         </button>
       </form>
     </main>

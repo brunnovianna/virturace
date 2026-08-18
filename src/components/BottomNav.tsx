@@ -43,7 +43,7 @@ function IconCriar({ className }: IconProps) {
   );
 }
 
-function IconMedalhas({ className }: IconProps) {
+function IconPistas({ className }: IconProps) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -57,8 +57,8 @@ function IconMedalhas({ className }: IconProps) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d="M8.5 9 6.5 3.5M15.5 9l2-5.5M10.5 3.5 12 6.5l1.5-3" />
-      <circle cx="12" cy="15" r="6" />
+      <path d="M5 21V3" />
+      <path d="M5 4h12l-2.5 3.5L17 11H5" />
     </svg>
   );
 }
@@ -66,7 +66,7 @@ function IconMedalhas({ className }: IconProps) {
 const items = [
   { to: '/', end: true, label: 'Corridas', Icon: IconCorridas },
   { to: '/criar', end: false, label: 'Criar', Icon: IconCriar },
-  { to: '/medalhas', end: false, label: 'Medalhas', Icon: IconMedalhas },
+  { to: '/minhas-pistas', end: false, label: 'Minhas pistas', Icon: IconPistas },
 ];
 
 export default function BottomNav() {
