@@ -199,8 +199,8 @@ export default function MyTracks() {
           )}
           {reg && !done && (
             <p className="mt-2.5 max-w-xs text-sm text-papel-suave">
-              Terminou de correr? Envie uma foto (sua ou do app de corrida) e
-              ela vira o centro da sua medalha.
+              Terminou de correr? Envie uma foto do seu app ou relógio de
+              corrida pra gente!
             </p>
           )}
         </div>
