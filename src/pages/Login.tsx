@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { login, signup } from '../api/session';
 import { useAuth } from '../contexts/Auth';
+import logoAmarelo from '../assets/logo-amarelo.png';
 
 export default function Login() {
   const [mode, setMode] = useState<'entrar' | 'cadastro'>('entrar');
@@ -36,15 +37,17 @@ export default function Login() {
   return (
     <main className="mx-auto max-w-4xl px-5 pb-20 pt-14">
       <div className="mb-7 text-center">
-        <span className="inline-block -rotate-2 font-display text-4xl text-amarelo">
-          VirtuRace
-        </span>
+        <img
+          src={logoAmarelo}
+          alt="VirtuRace"
+          className="mx-auto mb-2 h-auto w-full max-w-[280px]"
+        />
         <h1 className="titulo-corrida mt-1 text-center">
           Bora correr <span className="text-laranja">por aí?</span>
         </h1>
-        <p className="mx-auto max-w-md text-papel-suave">
+        <p className="mx-auto mt-5 max-w-md text-papel-suave">
           Corridas virtuais com a turma: você corre onde estiver, manda a foto e
-          cunha sua medalha.
+          se diverte onde estiver.
         </p>
       </div>
 
