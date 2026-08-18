@@ -174,8 +174,8 @@ export default function EventDetail() {
             ✓ Você tá na pista
             {mine.modality ? ` na ${modalityLabel(mine.modality)}` : ''}! Quando
             terminar a corrida, envie sua foto em{' '}
-            <Link to="/medalhas" className="font-semibold text-amarelo">
-              Minhas medalhas
+            <Link to="/minhas-pistas" className="font-semibold text-amarelo">
+              Minhas pistas
             </Link>{' '}
             para cunhar a sua.
           </div>
@@ -185,8 +185,8 @@ export default function EventDetail() {
             🏅 Você concluiu esta corrida
             {mine.modality ? ` (${modalityLabel(mine.modality)})` : ''}! Sua
             medalha está no mural aqui embaixo e em{' '}
-            <Link to="/medalhas" className="font-semibold text-amarelo">
-              Minhas medalhas
+            <Link to="/minhas-pistas" className="font-semibold text-amarelo">
+              Minhas pistas
             </Link>
             .
           </div>

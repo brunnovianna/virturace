@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import EventList from './pages/EventList';
 import EventCreate from './pages/EventCreate';
 import EventDetail from './pages/EventDetail';
-import MyMedals from './pages/MyMedals';
+import MyTracks from './pages/MyTracks';
 
 export default function App() {
   return (
@@ -39,10 +39,10 @@ export default function App() {
           }
         />
         <Route
-          path="/medalhas"
+          path="/minhas-pistas"
           element={
             <RequireAuth>
-              <MyMedals />
+              <MyTracks />
             </RequireAuth>
           }
         />

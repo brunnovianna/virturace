@@ -140,6 +140,58 @@ export async function getEvent(id: string): Promise<EventDetail | null> {
   };
 }
 
+const MY_CREATED_EVENTS = `
+  query MyCreatedEvents($userId: uuid!) {
+    events(
+      where: { created_by: { _eq: $userId } }
+      order_by: { start_date: asc }
+    ) {
+      id
+      name
+      start_date
+      end_date
+      registrations {
+        status
+      }
+    }
+  }
+`;
+
+interface MyCreatedEventRow {
+  id: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+  registrations: Array<{ status: string }>;
+}
+
+export interface MyCreatedEvent {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  registrationCount: number;
+  completedCount: number;
+}
+
+export async function listMyCreatedEvents(
+  userId: string
+): Promise<MyCreatedEvent[]> {
+  const data = await graphqlClient.request<{ events: MyCreatedEventRow[] }>(
+    MY_CREATED_EVENTS,
+    { userId }
+  );
+  return data.events.map((row) => ({
+    id: row.id,
+    name: row.name,
+    startDate: row.start_date,
+    endDate: row.end_date,
+    registrationCount: row.registrations.length,
+    completedCount: row.registrations.filter((r) => r.status === 'completed')
+      .length,
+  }));
+}
+
 const CREATE_EVENT = `
   mutation CreateEvent(
     $name: String!

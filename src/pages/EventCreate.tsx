@@ -118,13 +118,10 @@ export default function EventCreate() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
-          placeholder="Conte o clima da corrida — por que vai ser boa?"
+          placeholder="Detalhe a corrida e faça a chamada pra galera."
         />
 
         <span className="rotulo">Modalidades</span>
-        <p className="-mt-1 mb-2 text-xs text-papel-fraco">
-          Caminhada, corrida, várias distâncias — tudo junto na mesma prova.
-        </p>
         <div className="flex flex-col gap-2.5">
           {modalities.map(({ key, draft }, i) => (
             <div key={key} className="flex items-center gap-2">
@@ -206,7 +203,7 @@ export default function EventCreate() {
         {error && <p className="mt-3 text-sm text-[#ff6b6b]">{error}</p>}
 
         <button type="submit" disabled={loading} className="btn-corrida mt-5">
-          {loading ? 'Subindo o palco...' : 'Soltar o cartaz 🎉'}
+          {loading ? 'Subindo o palco...' : 'Abrir a pista 🎉'}
         </button>
       </form>
     </main>
