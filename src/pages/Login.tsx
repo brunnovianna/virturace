@@ -47,7 +47,7 @@ export default function Login() {
         </h1>
         <p className="mx-auto mt-5 max-w-md text-papel-suave">
           Corridas virtuais com a turma: você corre onde estiver, manda a foto e
-          cunha sua medalha.
+          se diverte onde estiver.
         </p>
       </div>
 
