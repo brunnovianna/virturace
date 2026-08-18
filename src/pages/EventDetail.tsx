@@ -277,9 +277,7 @@ export default function EventDetail() {
         {mine?.status === 'registered' && (
           <div className="rounded-2xl bg-black/25 p-4 text-sm text-white">
             ✓ Você tá na pista
-            {mine.modality ? ` na ${modalityLabel(mine.modality)}` : ''}! Quando
-            terminar, acesse a corrida e clique em{' '}
-            <span className="font-semibold text-amarelo">Finalizei</span>.
+            {mine.modality ? ` na ${modalityLabel(mine.modality)}` : ''}!
           </div>
         )}
         {mine?.status === 'completed' && (
