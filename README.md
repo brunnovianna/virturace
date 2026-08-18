@@ -1,69 +1,49 @@
-# React + TypeScript + Vite
+# VirtuRace 🏅
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+App de corrida virtual com alma de festival de rua: crie "festas" (eventos de
+corrida), entre na pista, corra onde estiver e cunhe sua medalha enviando uma
+foto de conclusão.
 
-Currently, two official plugins are available:
+**Palavras centrais do produto:** grupalidade · saúde · alegria de viver.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Stack
 
-## Expanding the ESLint configuration
+Mesmos caminhos do Nutrilla:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **GitHub** — código e deploys automáticos
+- **Neon** — Postgres serverless
+- **Hasura Cloud** — GraphQL com permissões por papel (JWT mode, papel `runner`)
+- **Vercel** — frontend (Vite + React 19 + TypeScript + Tailwind) e funções
+  serverless de auth (`/api/signup`, `/api/login` — bcrypt + JWT HS256)
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Frontend fala GraphQL via `graphql-request` + TanStack Query. A foto de
+conclusão é comprimida no navegador (máx. 1280px, JPEG) e guardada como data
+URL no Postgres — simples para o v1; o caminho de upgrade é storage de
+objetos guardando só a URL.
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Rodando
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+- **Produção:** siga o passo a passo (100% via navegador) em
+  [`docs/SETUP.md`](docs/SETUP.md).
+- **Dev local:** `npm install && npm run dev` com um `.env.local` baseado no
+  [`.env.example`](.env.example) — aponte `VITE_HASURA_GRAPHQL_ENDPOINT` para
+  o Hasura e `VITE_API_BASE` para um deploy da Vercel (as funções de auth não
+  rodam no `vite dev`).
+
+## Estrutura
+
+```
+api/            funções serverless da Vercel (auth)
+hasura/         schema.sql (Neon) + metadata.json (permissões) + docs
+src/api/        client GraphQL e chamadas (events, registrations, session)
+src/pages/      Login, Festas, Criar, Detalhe (+ mural), Minhas medalhas
+docs/SETUP.md   guia de provisionamento sem terminal
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Modelo de acesso
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+Sem papel anônimo — tudo exige login. O papel `runner` lê todos os eventos e
+inscrições (o mural é público entre pessoas logadas), mas só cria eventos em
+seu próprio nome, só inscreve a si mesmo e só conclui a própria inscrição.
+E-mail e hash de senha nunca são expostos via GraphQL. Detalhes em
+[`hasura/README.md`](hasura/README.md).

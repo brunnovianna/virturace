@@ -4,6 +4,7 @@ import tseslint from 'typescript-eslint';
 import pluginReact from 'eslint-plugin-react';
 
 export default [
+  { ignores: ['dist'] },
   { files: ['**/*.{js,mjs,cjs,ts,tsx,jsx}'] },
   { languageOptions: { globals: globals.browser } },
   js.configs.recommended,
@@ -18,5 +19,9 @@ export default [
     rules: {
       'react/react-in-jsx-scope': 'off',
     },
+  },
+  {
+    files: ['api/**/*.ts'],
+    languageOptions: { globals: globals.node },
   },
 ];
