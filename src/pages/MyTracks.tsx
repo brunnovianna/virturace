@@ -153,8 +153,30 @@ export default function MyTracks() {
           </span>
           <div className="mt-2 flex flex-wrap gap-2">
             {t.organizing && (
-              <span className="inline-block rounded-full bg-laranja/20 px-3 py-1 text-xs font-semibold text-laranja">
-                🎪 Você organiza
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-laranja/20 px-3 py-1 text-xs font-semibold text-laranja">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <g transform="translate(-1.2 1) scale(0.82)">
+                    <rect width="8" height="4" x="8" y="2" rx="1" />
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <path d="M8 11l1.3 1.3L11.5 10" />
+                    <path d="M13 11.5h3" />
+                    <path d="M8 16l1.3 1.3L11.5 15" />
+                    <path d="M13 16.5h3" />
+                  </g>
+                  <path d="M20 4l-1.5 3h3z" />
+                  <path d="M18.5 7h3v11.6h-3z" />
+                  <path d="M18.5 9.4h3" />
+                </svg>
+                Você organiza
               </span>
             )}
             {reg && (
@@ -191,10 +213,28 @@ export default function MyTracks() {
           />
         ) : reg ? (
           <label
-            className="btn-corrida cursor-pointer text-base"
+            className="btn-corrida inline-flex cursor-pointer items-center gap-2 text-base"
             onClick={(e) => e.stopPropagation()}
           >
-            {uploadingId === reg.id ? 'Enviando...' : '📷 Finalizei'}
+            {uploadingId === reg.id ? (
+              'Enviando...'
+            ) : (
+              <>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                  aria-hidden="true"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Finalizei
+              </>
+            )}
             <input
               type="file"
               accept="image/*"

@@ -135,8 +135,40 @@ export default function EventDetail() {
         ← Todas as corridas
       </Link>
 
-      <div className={`${posterGradient(gradIndex)} mt-3.5 rounded-3xl p-7`}>
-        <div className="flex flex-wrap gap-2">
+      <div
+        className={`${posterGradient(gradIndex)} relative mt-3.5 rounded-3xl p-7`}
+      >
+        <button
+          type="button"
+          onClick={handleShare}
+          aria-label="Compartilhar"
+          title="Compartilhar"
+          className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-black/25 text-white transition hover:bg-black/40"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5 w-5"
+            aria-hidden="true"
+          >
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+            <line x1="15.4" y1="6.5" x2="8.6" y2="10.5" />
+          </svg>
+        </button>
+        {shareMsg && (
+          <p className="absolute right-5 top-16 max-w-[16rem] break-all rounded-xl bg-black/50 px-3 py-2 text-right text-xs text-amarelo">
+            {shareMsg}
+          </p>
+        )}
+
+        <div className="flex flex-wrap gap-2 pr-12">
           {data.modalities.map((m) => (
             <span key={m.id} className="chip-corrida">
               {modalityKindEmoji(m.kind)} {modalityLabel(m)}
@@ -175,44 +207,16 @@ export default function EventDetail() {
           </div>
         </div>
 
-        <div className="mb-5">
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={handleShare}
-              className="inline-flex items-center gap-2 rounded-full bg-black/25 px-4 py-2 text-sm font-semibold text-white transition hover:bg-black/40"
+        {data.creatorId === user.id && (
+          <div className="mb-5">
+            <Link
+              to={`/corrida/${data.id}/editar`}
+              className="inline-flex items-center gap-2 rounded-full bg-black/25 px-4 py-2 text-sm font-semibold text-white no-underline transition hover:bg-black/40"
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-4 w-4"
-                aria-hidden="true"
-              >
-                <circle cx="18" cy="5" r="3" />
-                <circle cx="6" cy="12" r="3" />
-                <circle cx="18" cy="19" r="3" />
-                <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
-                <line x1="15.4" y1="6.5" x2="8.6" y2="10.5" />
-              </svg>
-              Compartilhar
-            </button>
-            {data.creatorId === user.id && (
-              <Link
-                to={`/corrida/${data.id}/editar`}
-                className="inline-flex items-center gap-2 rounded-full bg-black/25 px-4 py-2 text-sm font-semibold text-white no-underline transition hover:bg-black/40"
-              >
-                ✏️ Editar corrida
-              </Link>
-            )}
+              ✏️ Editar corrida
+            </Link>
           </div>
-          {shareMsg && (
-            <p className="mt-2 break-all text-xs text-amarelo">{shareMsg}</p>
-          )}
-        </div>
+        )}
 
         {!mine && (
           <div className="max-w-sm">
