@@ -12,7 +12,7 @@ export default function Header() {
     <nav className="mx-auto flex max-w-4xl items-center gap-2.5 px-5 py-3.5">
       <Link
         to="/"
-        className="mr-auto inline-block -rotate-2 font-display text-2xl text-amarelo no-underline"
+        className="mr-auto inline-block font-display text-2xl text-amarelo no-underline"
       >
         VirtuRace
       </Link>

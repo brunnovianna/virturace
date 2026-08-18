@@ -43,7 +43,7 @@ export default function EventList() {
             return (
               <div
                 key={event.id}
-                className={`${posterGradient(i)} relative flex min-h-[190px] flex-col overflow-hidden rounded-[22px] text-left transition-transform hover:-rotate-1 hover:scale-[1.015] motion-reduce:transform-none`}
+                className={`${posterGradient(i)} relative flex min-h-[190px] flex-col overflow-hidden rounded-[22px] text-left transition-transform hover:scale-[1.015] motion-reduce:transform-none`}
               >
                 <Link
                   to={`/corrida/${event.id}`}
@@ -92,7 +92,7 @@ export default function EventList() {
                   </div>
 
                   <div className="flex min-w-0 flex-col gap-2">
-                    <h3 className="-rotate-1 font-display text-2xl leading-none">
+                    <h3 className="font-display text-2xl leading-none">
                       {event.name}
                     </h3>
                     <span className="flex flex-wrap gap-1.5">

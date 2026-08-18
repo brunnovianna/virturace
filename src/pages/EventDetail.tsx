@@ -309,7 +309,7 @@ export default function EventDetail() {
 
       {completed.length > 0 && (
         <>
-          <h2 className="mb-3.5 mt-9 -rotate-1 font-display text-2xl">
+          <h2 className="mb-3.5 mt-9 font-display text-2xl">
             Mural de medalhas
           </h2>
           <div className="flex flex-wrap gap-4">
