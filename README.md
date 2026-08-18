@@ -1,6 +1,6 @@
 # VirtuRace 🏅
 
-App de corrida virtual com alma de festival de rua: crie "festas" (eventos de
+App de corrida virtual com alma de festival de rua: crie "corridas" (eventos de
 corrida), entre na pista, corra onde estiver e cunhe sua medalha enviando uma
 foto de conclusão.
 
@@ -36,7 +36,7 @@ objetos guardando só a URL.
 api/            funções serverless da Vercel (auth)
 hasura/         schema.sql (Neon) + metadata.json (permissões) + docs
 src/api/        client GraphQL e chamadas (events, registrations, session)
-src/pages/      Login, Festas, Criar, Detalhe (+ mural), Minhas medalhas
+src/pages/      Login, Corridas, Criar, Detalhe (+ mural), Minhas medalhas
 docs/SETUP.md   guia de provisionamento sem terminal
 ```
 

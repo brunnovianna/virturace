@@ -15,20 +15,20 @@ export default function EventList() {
 
   return (
     <main className="mx-auto max-w-4xl px-5 pb-20 pt-4">
-      <h1 className="titulo-festa">
-        Festas na <span className="text-laranja">pista</span>
+      <h1 className="titulo-corrida">
+        Corridas na <span className="text-laranja">pista</span>
       </h1>
       <p className="mb-7 max-w-lg text-papel-suave">
         Escolha uma corrida, entre na pista e corra onde você estiver. No final,
         sua foto vira medalha.
       </p>
 
-      {isPending && <p className="text-papel-suave">Carregando as festas...</p>}
+      {isPending && <p className="text-papel-suave">Carregando as corridas...</p>}
       {error && <p className="text-[#ff6b6b]">{gqlErrorMessage(error)}</p>}
 
       {data && data.length === 0 && (
         <p className="text-papel-suave">
-          Nenhuma festa por enquanto.{' '}
+          Nenhuma corrida por enquanto.{' '}
           <Link to="/criar" className="font-semibold text-agua underline">
             Monta a primeira?
           </Link>
@@ -41,7 +41,7 @@ export default function EventList() {
             <button
               key={event.id}
               type="button"
-              onClick={() => navigate(`/festa/${event.id}`)}
+              onClick={() => navigate(`/corrida/${event.id}`)}
               className={`${posterGradient(i)} flex min-h-[150px] flex-col gap-2 rounded-[20px] p-5 text-left transition-transform hover:-rotate-1 hover:scale-[1.015] motion-reduce:transform-none`}
             >
               <h3 className="font-display text-xl leading-tight">
@@ -52,17 +52,17 @@ export default function EventList() {
                 {formatDate(event.endDate)}
               </span>
               <span className="mt-auto flex flex-wrap items-center gap-2">
-                <span className="chip-festa">
+                <span className="chip-corrida">
                   {event.registrationCount} na pista
                 </span>
                 {event.completedCount > 0 && (
-                  <span className="chip-festa chip-festa--sol">
+                  <span className="chip-corrida chip-corrida--sol">
                     🏅 {event.completedCount} medalha
                     {event.completedCount > 1 ? 's' : ''}
                   </span>
                 )}
                 {event.amRegistered && (
-                  <span className="chip-festa">você tá dentro ✓</span>
+                  <span className="chip-corrida">você tá dentro ✓</span>
                 )}
               </span>
             </button>

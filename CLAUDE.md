@@ -87,7 +87,7 @@ Quando uma entrega acopla banco + metadata + código:
   verde-água `#2ec4b6`, laranja `#ff8a3d`, amarelo `#ffd24a`; títulos Lilita
   One levemente rotacionados, corpo Rubik. Tokens no `tailwind.config.js` —
   usar os nomes (`palco`, `agua`, `laranja`...), não hex solto.
-- Vocabulário do produto em texto de usuário: evento é **"festa"**, inscrição é
+- Vocabulário do produto em texto de usuário: evento é **"corrida"**, inscrição é
   **"entrar na pista"**, conclusão com foto é **"cunhar a medalha"**, a página
   do evento tem o **"mural de medalhas"**. Tom celebratório, pt-BR informal.
   Identificadores de código/banco ficam neutros (`events`, `registrations`).

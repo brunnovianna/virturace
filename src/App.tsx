@@ -30,7 +30,7 @@ export default function App() {
           }
         />
         <Route
-          path="/festa/:id"
+          path="/corrida/:id"
           element={
             <RequireAuth>
               <EventDetail />

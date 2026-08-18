@@ -32,17 +32,17 @@ export default function EventCreate() {
         endDate,
       });
       queryClient.invalidateQueries({ queryKey: ['events'] });
-      navigate(`/festa/${id}`);
+      navigate(`/corrida/${id}`);
     } catch (err) {
-      setError(gqlErrorMessage(err, 'Não foi possível criar a festa agora.'));
+      setError(gqlErrorMessage(err, 'Não foi possível criar a corrida agora.'));
       setLoading(false);
     }
   }
 
   return (
     <main className="mx-auto max-w-4xl px-5 pb-20 pt-4">
-      <h1 className="titulo-festa">
-        Monta a <span className="text-laranja">tua festa</span>
+      <h1 className="titulo-corrida">
+        Monta a <span className="text-laranja">tua corrida</span>
       </h1>
       <p className="mb-7 max-w-lg text-papel-suave">
         Invente a corrida: uma distância, um período, um convite. A turma faz o
@@ -121,7 +121,7 @@ export default function EventCreate() {
 
         {error && <p className="mt-3 text-sm text-[#ff6b6b]">{error}</p>}
 
-        <button type="submit" disabled={loading} className="btn-festa mt-5">
+        <button type="submit" disabled={loading} className="btn-corrida mt-5">
           {loading ? 'Subindo o palco...' : 'Soltar o cartaz 🎉'}
         </button>
       </form>

@@ -60,7 +60,7 @@ export default function MyMedals() {
 
   return (
     <main className="mx-auto max-w-4xl px-5 pb-20 pt-4">
-      <h1 className="titulo-festa">
+      <h1 className="titulo-corrida">
         Minhas <span className="text-laranja">medalhas</span>
       </h1>
       <p className="mb-7 max-w-lg text-papel-suave">
@@ -80,7 +80,7 @@ export default function MyMedals() {
         <p className="text-papel-suave">
           Você ainda não entrou em nenhuma corrida.{' '}
           <Link to="/" className="font-semibold text-agua underline">
-            Escolhe uma festa
+            Escolhe uma corrida
           </Link>{' '}
           e bora!
         </p>
@@ -98,7 +98,7 @@ export default function MyMedals() {
                 <div className="min-w-[190px] flex-1">
                   <h3 className="font-display text-lg">
                     <Link
-                      to={`/festa/${reg.event.id}`}
+                      to={`/corrida/${reg.event.id}`}
                       className="text-papel no-underline hover:text-amarelo"
                     >
                       {reg.event.name}
@@ -135,7 +135,7 @@ export default function MyMedals() {
                     caption={`em ${formatDate(reg.completedAt)}`}
                   />
                 ) : (
-                  <label className="btn-festa cursor-pointer text-base">
+                  <label className="btn-corrida cursor-pointer text-base">
                     {uploadingId === reg.id
                       ? 'Cunhando...'
                       : '📷 Cunhar minha medalha'}

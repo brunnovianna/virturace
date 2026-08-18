@@ -39,7 +39,7 @@ export default function Login() {
         <span className="inline-block -rotate-2 font-display text-4xl text-amarelo">
           VirtuRace
         </span>
-        <h1 className="titulo-festa mt-1 text-center">
+        <h1 className="titulo-corrida mt-1 text-center">
           Bora correr <span className="text-laranja">por aí?</span>
         </h1>
         <p className="mx-auto max-w-md text-papel-suave">
@@ -99,12 +99,12 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="btn-festa mt-5 w-full"
+          className="btn-corrida mt-5 w-full"
         >
           {loading
             ? 'Aguenta aí...'
             : mode === 'entrar'
-              ? 'Entrar na festa'
+              ? 'Entrar na corrida'
               : 'Criar minha conta 🎉'}
         </button>
 
