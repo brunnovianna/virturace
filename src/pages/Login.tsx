@@ -35,12 +35,12 @@ export default function Login() {
   }
 
   return (
-    <main className="mx-auto max-w-4xl px-5 pb-20 pt-14">
+    <main className="mx-auto max-w-4xl px-5 pb-20 pt-8">
       <div className="mb-7 text-center">
         <img
           src={logoAmarelo}
           alt="VirtuRace"
-          className="mx-auto mb-2 h-auto w-full max-w-[280px]"
+          className="mx-auto mb-2 h-auto w-full max-w-[224px]"
         />
         <h1 className="titulo-corrida mt-1 text-center">
           Bora correr <span className="text-laranja">por aí?</span>
