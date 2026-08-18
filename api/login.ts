@@ -6,7 +6,7 @@ import {
   methodNotAllowed,
   readBody,
   type DbUser,
-} from './_shared';
+} from './_shared.js';
 
 const USER_BY_EMAIL = `
   query UserByEmail($email: String!) {

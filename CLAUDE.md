@@ -5,17 +5,25 @@
 - **100% pelo celular.** Não existe máquina local, terminal, CLI nem DevTools.
   NUNCA sugerir: rodar comandos localmente, `hasura` CLI, `psql`, `vercel` CLI,
   scripts shell "na sua máquina", abrir DevTools/console do navegador.
-- Caminhos que funcionam: **console do Hasura Cloud**, **console do Neon**
-  (SQL Editor), **painel da Vercel** (env vars, deploys, logs de função),
-  **GitHub web** (editar/upload de arquivos, merge de PR), **anexos/colagem
-  aqui no chat**.
+- Caminhos que funcionam: **console do Hasura Cloud**, **painel da Vercel**
+  (env vars, deploys, logs de função), **GitHub web** (editar/upload de
+  arquivos, merge de PR), **anexos/colagem aqui no chat**. O console do Neon
+  serve só para administrar o banco em si (criar projeto, connection string).
+- **SQL roda SEMPRE pelo console do Hasura (Data → SQL)** — é o hábito do
+  Brunno desde o nutrilla. NUNCA sugerir o SQL Editor do Neon como caminho
+  (aprendido em 2026-08-18); a única exigência é o banco já estar conectado
+  como source `default`.
+- **A rede das sessões remotas bloqueia o site no ar** (`virturace.vercel.app`,
+  endpoints `*.hasura.app`) — HTTPS comum dá 403 pelo proxy. Não tente
+  health-check/teste de produção daqui: quem verifica o app no ar é o Brunno;
+  a sessão pede o resultado (e logs da Vercel colados no chat quando der erro).
 - **Não pedir segredos.** O Brunno não fornece `HASURA_ADMIN_SECRET` nem
   `JWT_SECRET` a sessões do Claude — não insistir. Eles vivem nas env vars da
   Vercel e do Hasura Cloud (ver `docs/SETUP.md`).
 - **SQL SEMPRE via texto no chat, NUNCA como arquivo anexo.** O Brunno copia
-  do chat direto para o SQL Editor (Neon) ou Data → SQL (Hasura) pelo celular;
-  arquivo é atrito. Vale para todo SQL — DDL, view, `UPDATE` pontual, consulta
-  de conferência. (O **JSON de metadata** vai como arquivo — é grande demais
+  do chat direto para o console do Hasura (Data → SQL) pelo celular; arquivo é
+  atrito. Vale para todo SQL — DDL, view, `UPDATE` pontual, consulta de
+  conferência. (O **JSON de metadata** vai como arquivo — é grande demais
   para colar e o fluxo dele é baixar → importar no console.)
 
 ## Banco / Hasura
@@ -103,4 +111,14 @@ Quando uma entrega acopla banco + metadata + código:
   como data URL em `registrations.proof_photo`. Caminho de upgrade conhecido:
   storage de objetos guardando só a URL — não implementar sem o Brunno pedir.
 - Deploy: um único projeto Vercel serve o SPA e as funções `/api/*`
-  (`vercel.json` só tem o rewrite do SPA).
+  (`vercel.json` só tem o rewrite do SPA). Deploy automático no push/merge
+  para `main`.
+
+## Armadilhas conhecidas
+
+- **Imports relativos em `api/` PRECISAM da extensão `.js`**
+  (`from './_shared.js'`, mesmo sendo `.ts`): o repo é `"type": "module"` e o
+  runtime Node da Vercel resolve ESM estrito — sem extensão dá
+  `ERR_MODULE_NOT_FOUND` em produção (quebrou o primeiro deploy, 2026-08-18).
+  `tsconfig.api.json` usa `moduleResolution: NodeNext` justamente para o
+  typecheck acusar isso antes do push.

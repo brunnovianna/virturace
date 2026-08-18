@@ -18,30 +18,33 @@ Dá para gerar em <https://www.random.org/passwords/?num=2&len=24&format=plain>
 
 1. Entre em <https://neon.tech> (login com GitHub) e crie um projeto
    chamado `virturace` (região `AWS us-east-1` funciona bem com Hasura Cloud).
-2. No painel do projeto, abra **SQL Editor**, cole o conteúdo inteiro de
-   [`hasura/schema.sql`](../hasura/schema.sql) e clique **Run**. Deve criar as
-   tabelas `users`, `events` e `registrations`.
-3. Em **Dashboard → Connect**, copie a **connection string** (formato
-   `postgresql://usuario:senha@host/dbname?sslmode=require`). Você vai usá-la
-   no passo 2.
+2. Em **Connect**, copie a **connection string** (formato
+   `postgresql://usuario:senha@host/dbname?sslmode=require`). É só isso no
+   Neon — o SQL roda pelo console do Hasura, no passo seguinte.
 
 ## 2. Hasura Cloud — o GraphQL
 
 1. Entre em <https://cloud.hasura.io> e crie um projeto (free tier serve).
-2. Abra o projeto → aba **Env vars** e adicione:
+2. Abra o projeto → aba **Env vars**. O `HASURA_GRAPHQL_ADMIN_SECRET` já vem
+   criado — copie o valor dele e use-o como o seu **ADMIN_SECRET** daqui em
+   diante. Adicione as outras duas:
 
-   | Env var                       | Valor                                                      |
-   | ----------------------------- | ---------------------------------------------------------- |
-   | `PG_DATABASE_URL`             | a connection string do Neon (passo 1.3)                    |
-   | `HASURA_GRAPHQL_ADMIN_SECRET` | o seu **ADMIN_SECRET**                                     |
-   | `HASURA_GRAPHQL_JWT_SECRET`   | `{"type":"HS256","key":"SEU_JWT_KEY_AQUI"}` (JSON literal) |
+   | Env var                     | Valor                                                      |
+   | --------------------------- | ---------------------------------------------------------- |
+   | `PG_DATABASE_URL`           | a connection string do Neon (passo 1.2)                    |
+   | `HASURA_GRAPHQL_JWT_SECRET` | `{"type":"HS256","key":"SEU_JWT_KEY_AQUI"}` (JSON literal) |
 
-3. Abra o **Console** do Hasura (botão "Launch console") → engrenagem ⚙️
-   (Settings) → **Metadata Actions → Import metadata** → envie o arquivo
-   [`hasura/metadata.json`](../hasura/metadata.json). Isso conecta o banco
-   (via `PG_DATABASE_URL`), rastreia as tabelas, cria os relacionamentos e as
-   permissões do papel `runner` de uma vez.
-4. Confira em **Data**: as três tabelas devem aparecer rastreadas. Em
+3. **Launch console** → aba **Data** → **Connect Database**: nome do source
+   **`default`** (exatamente), conexão via **environment variable**
+   `PG_DATABASE_URL`.
+4. Ainda em **Data → SQL**, cole o conteúdo inteiro de
+   [`hasura/schema.sql`](../hasura/schema.sql) e rode. Deve criar as tabelas
+   `users`, `events` e `registrations`.
+5. Engrenagem ⚙️ (Settings) → **Metadata Actions → Import metadata** → envie o
+   arquivo [`hasura/metadata.json`](../hasura/metadata.json). Isso rastreia as
+   tabelas e cria os relacionamentos e as permissões do papel `runner` de uma
+   vez.
+6. Confira em **Data**: as três tabelas devem aparecer rastreadas. Em
    **API**, anote a URL do **GraphQL Endpoint**
    (`https://SEU-PROJETO.hasura.app/v1/graphql`).
 
