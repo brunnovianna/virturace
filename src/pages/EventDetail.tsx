@@ -22,6 +22,7 @@ export default function EventDetail() {
   const [subscribing, setSubscribing] = useState(false);
   const [actionError, setActionError] = useState('');
   const [chosenModality, setChosenModality] = useState('');
+  const [city, setCity] = useState('');
   const [shareMsg, setShareMsg] = useState('');
 
   const { data, error, isPending } = useQuery({
@@ -38,15 +39,20 @@ export default function EventDetail() {
     };
   }, [data?.name]);
 
-  async function handleSubscribe(modalityId: string) {
+  async function handleSubscribe(modalityId: string, cityValue: string) {
     if (!modalityId) {
       setActionError('Escolha uma modalidade para entrar na pista.');
+      return;
+    }
+    const trimmedCity = cityValue.trim();
+    if (!trimmedCity) {
+      setActionError('Diga em qual cidade você vai correr.');
       return;
     }
     setActionError('');
     setSubscribing(true);
     try {
-      await registerForModality(modalityId);
+      await registerForModality(modalityId, trimmedCity);
       await queryClient.invalidateQueries({ queryKey: ['event', id] });
       queryClient.invalidateQueries({ queryKey: ['events'] });
       queryClient.invalidateQueries({ queryKey: ['myRegistrations'] });
@@ -201,6 +207,17 @@ export default function EventDetail() {
           </div>
         </div>
 
+        {data.creatorId === user.id && (
+          <div className="mb-5">
+            <Link
+              to={`/corrida/${data.id}/editar`}
+              className="inline-flex items-center gap-2 rounded-full bg-black/25 px-4 py-2 text-sm font-semibold text-white no-underline transition hover:bg-black/40"
+            >
+              ✏️ Editar corrida
+            </Link>
+          </div>
+        )}
+
         {!mine && (
           <div className="max-w-sm">
             {data.modalities.length > 1 && (
@@ -233,9 +250,24 @@ export default function EventDetail() {
                 </div>
               </>
             )}
+            <label
+              htmlFor="city"
+              className="mb-1.5 block text-xs font-semibold uppercase tracking-wider opacity-85"
+            >
+              Onde você vai correr
+            </label>
+            <input
+              id="city"
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="Sua cidade"
+              autoComplete="address-level2"
+              className="mb-3 w-full rounded-2xl border-2 border-white/25 bg-black/25 p-3 text-sm text-white outline-none placeholder:text-white/55 focus:border-amarelo"
+            />
             <button
               type="button"
-              onClick={() => handleSubscribe(selectedModality)}
+              onClick={() => handleSubscribe(selectedModality, city)}
               disabled={subscribing}
               className="btn-corrida btn-corrida--agua"
             >

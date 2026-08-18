@@ -24,6 +24,7 @@ const EVENTS_QUERY = `
       description
       start_date
       end_date
+      created_by
       modalities {
         id
         kind
@@ -43,6 +44,7 @@ interface EventsRow {
   description: string;
   start_date: string;
   end_date: string;
+  created_by: string;
   modalities: ModalityRow[];
   registrations: Array<{ user_id: string; status: string }>;
 }
@@ -62,6 +64,7 @@ export async function listEvents(myUserId: string): Promise<EventSummary[]> {
     completedCount: row.registrations.filter((r) => r.status === 'completed')
       .length,
     amRegistered: row.registrations.some((r) => r.user_id === myUserId),
+    creatorId: row.created_by,
   }));
 }
 
@@ -73,6 +76,7 @@ const EVENT_QUERY = `
       description
       start_date
       end_date
+      created_by
       creator {
         name
       }
@@ -101,6 +105,7 @@ const EVENT_QUERY = `
 `;
 
 interface EventRow extends Omit<EventsRow, 'registrations'> {
+  created_by: string;
   creator: { name: string } | null;
   registrations: Array<{
     id: string;
@@ -127,6 +132,7 @@ export async function getEvent(id: string): Promise<EventDetail | null> {
     modalities: sortModalities(row.modalities.map(toModality)),
     startDate: row.start_date,
     endDate: row.end_date,
+    creatorId: row.created_by,
     creatorName: row.creator?.name ?? null,
     registrations: row.registrations.map((r) => ({
       id: r.id,
@@ -239,4 +245,77 @@ export async function createEvent(input: {
     })),
   });
   return data.insert_events_one.id;
+}
+
+// Edição pela organizadora. Uma única mutation transacional no Hasura:
+// atualiza os campos do evento, atualiza as modalidades que ficaram, insere as
+// novas e apaga as removidas. As permissões (evento e modalidade travados em
+// `created_by = usuário`) barram quem não é dono no servidor.
+const UPDATE_EVENT = `
+  mutation UpdateEvent(
+    $id: uuid!
+    $name: String!
+    $description: String!
+    $startDate: date!
+    $endDate: date!
+    $newModalities: [event_modalities_insert_input!]!
+    $removedIds: [uuid!]!
+    $updates: [event_modalities_updates!]!
+  ) {
+    update_events_by_pk(
+      pk_columns: { id: $id }
+      _set: {
+        name: $name
+        description: $description
+        start_date: $startDate
+        end_date: $endDate
+      }
+    ) {
+      id
+    }
+    delete_event_modalities(where: { id: { _in: $removedIds } }) {
+      affected_rows
+    }
+    insert_event_modalities(objects: $newModalities) {
+      affected_rows
+    }
+    update_event_modalities_many(updates: $updates) {
+      affected_rows
+    }
+  }
+`;
+
+export interface ModalityUpdate {
+  id: string;
+  kind: ModalityKind;
+  distanceKm: number;
+}
+
+export async function updateEvent(input: {
+  id: string;
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  newModalities: ModalityInput[];
+  updatedModalities: ModalityUpdate[];
+  removedModalityIds: string[];
+}): Promise<void> {
+  await graphqlClient.request(UPDATE_EVENT, {
+    id: input.id,
+    name: input.name,
+    description: input.description,
+    startDate: input.startDate,
+    endDate: input.endDate,
+    newModalities: input.newModalities.map((m) => ({
+      event_id: input.id,
+      kind: m.kind,
+      distance_km: m.distanceKm,
+    })),
+    removedIds: input.removedModalityIds,
+    updates: input.updatedModalities.map((m) => ({
+      where: { id: { _eq: m.id } },
+      _set: { kind: m.kind, distance_km: m.distanceKm },
+    })),
+  });
 }

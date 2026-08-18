@@ -73,15 +73,18 @@ export async function listMyRegistrations(
 }
 
 const REGISTER = `
-  mutation Register($modalityId: uuid!) {
-    insert_registrations_one(object: { modality_id: $modalityId }) {
+  mutation Register($modalityId: uuid!, $city: String!) {
+    insert_registrations_one(object: { modality_id: $modalityId, city: $city }) {
       id
     }
   }
 `;
 
-export async function registerForModality(modalityId: string): Promise<void> {
-  await graphqlClient.request(REGISTER, { modalityId });
+export async function registerForModality(
+  modalityId: string,
+  city: string
+): Promise<void> {
+  await graphqlClient.request(REGISTER, { modalityId, city });
 }
 
 const COMPLETE = `

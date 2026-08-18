@@ -99,6 +99,13 @@ create trigger registrations_set_event_id
   before insert on public.registrations
   for each row execute function public.set_registration_event_id();
 
+-- Cidade onde a pessoa vai correr, informada no momento da inscrição. Guardada
+-- para consulta futura (o uso ainda será definido). Anulável de propósito:
+-- linhas antigas e a janela de deploy entre metadata e código não têm cidade;
+-- o app novo passa a exigir no formulário de "entrar na pista".
+alter table public.registrations
+  add column if not exists city text;
+
 create index if not exists registrations_event_idx on public.registrations (event_id);
 create index if not exists registrations_user_idx on public.registrations (user_id);
 create index if not exists registrations_modality_idx on public.registrations (modality_id);

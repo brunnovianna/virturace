@@ -98,6 +98,16 @@
                   "filter": {}
                 }
               }
+            ],
+            "update_permissions": [
+              {
+                "role": "runner",
+                "permission": {
+                  "columns": ["name", "description", "start_date", "end_date"],
+                  "filter": { "created_by": { "_eq": "X-Hasura-User-Id" } },
+                  "check": {}
+                }
+              }
             ]
           },
           {
@@ -138,6 +148,28 @@
                   "filter": {}
                 }
               }
+            ],
+            "update_permissions": [
+              {
+                "role": "runner",
+                "permission": {
+                  "columns": ["kind", "distance_km"],
+                  "filter": {
+                    "event": { "created_by": { "_eq": "X-Hasura-User-Id" } }
+                  },
+                  "check": {}
+                }
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "runner",
+                "permission": {
+                  "filter": {
+                    "event": { "created_by": { "_eq": "X-Hasura-User-Id" } }
+                  }
+                }
+              }
             ]
           },
           {
@@ -162,7 +194,7 @@
                 "permission": {
                   "check": {},
                   "set": { "user_id": "x-hasura-user-id" },
-                  "columns": ["event_id", "modality_id"]
+                  "columns": ["event_id", "modality_id", "city"]
                 }
               }
             ],
@@ -177,7 +209,8 @@
                     "status",
                     "registered_at",
                     "completed_at",
-                    "proof_photo"
+                    "proof_photo",
+                    "city"
                   ],
                   "filter": {},
                   "allow_aggregations": true

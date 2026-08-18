@@ -17,10 +17,13 @@ O passo a passo completo (com a ordem certa e as env vars) está em
 - Papel único `runner` (o usuário logado):
   - `users`: lê só `id` e `name` de qualquer pessoa (para o mural). E-mail e
     hash de senha nunca saem pelo GraphQL — só as funções de auth (admin) os tocam.
-  - `events`: lê tudo; cria com `created_by` travado no próprio usuário.
-  - `event_modalities`: lê tudo; só insere modalidade em corrida que a própria
-    pessoa criou (`event.created_by`). Uma corrida pode ter várias (caminhada
-    3km, corrida 10km...) — a distância mora aqui, não mais no evento.
+  - `events`: lê tudo; cria com `created_by` travado no próprio usuário; edita
+    (nome, convite, período) só a corrida que criou (`created_by = usuário`).
+  - `event_modalities`: lê tudo; só insere, edita ou remove modalidade em
+    corrida que a própria pessoa criou (`event.created_by`). Uma corrida pode
+    ter várias (caminhada 3km, corrida 10km...) — a distância mora aqui, não
+    mais no evento. (A UI evita remover modalidade com inscritos, para não
+    órfã as medalhas; o banco faria `set null` no `modality_id`.)
   - `registrations`: lê tudo (mural público entre logados); inscreve-se apenas
     a si mesmo (`user_id` vem da sessão) escolhendo uma `modality_id` — o
     `event_id` é preenchido por trigger a partir da modalidade, então a unique
