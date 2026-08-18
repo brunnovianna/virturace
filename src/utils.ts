@@ -32,6 +32,59 @@ export function sortModalities(modalities: Modality[]): Modality[] {
   );
 }
 
+/** Junta distâncias num rótulo curto: [3,5] → "3 e 5 km". */
+export function joinKm(distances: number[]): string {
+  const nums = distances.map((d) => d.toLocaleString('pt-BR'));
+  if (nums.length === 0) return '';
+  if (nums.length === 1) return `${nums[0]} km`;
+  const last = nums[nums.length - 1];
+  return `${nums.slice(0, -1).join(', ')} e ${last} km`;
+}
+
+/**
+ * Agrupa as modalidades por tipo para chips compactos — corrida antes de
+ * caminhada, distâncias em ordem. Ex.: [{run,3},{run,5},{walk,5}] vira
+ * [{run, "3 e 5 km"}, {walk, "5 km"}].
+ */
+export function groupModalities(
+  modalities: Modality[]
+): { kind: ModalityKind; emoji: string; label: string }[] {
+  const byKind = new Map<ModalityKind, number[]>();
+  for (const m of sortModalities(modalities)) {
+    const arr = byKind.get(m.kind) ?? [];
+    arr.push(m.distanceKm);
+    byKind.set(m.kind, arr);
+  }
+  const order: ModalityKind[] = ['run', 'walk'];
+  return order
+    .filter((kind) => byKind.has(kind))
+    .map((kind) => ({
+      kind,
+      emoji: modalityKindEmoji(kind),
+      label: joinKm(byKind.get(kind) as number[]),
+    }));
+}
+
+const MONTHS_PT = [
+  'jan', 'fev', 'mar', 'abr', 'mai', 'jun',
+  'jul', 'ago', 'set', 'out', 'nov', 'dez',
+];
+
+/** Peças do bloco de data do card: dia inicial/final e mês(es) abreviados. */
+export function dateRangeParts(startIso: string, endIso: string) {
+  const s = startIso.slice(0, 10).split('-');
+  const e = endIso.slice(0, 10).split('-');
+  const startMon = MONTHS_PT[Number(s[1]) - 1] ?? '';
+  const endMon = MONTHS_PT[Number(e[1]) - 1] ?? '';
+  return {
+    startDay: s[2] ?? '',
+    endDay: e[2] ?? '',
+    startMon,
+    endMon,
+    sameMonth: startMon === endMon,
+  };
+}
+
 export function firstName(name: string): string {
   return name.trim().split(/\s+/)[0] ?? name;
 }
