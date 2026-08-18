@@ -1,3 +1,5 @@
+import type { Modality, ModalityKind } from './types';
+
 export function formatDate(iso: string | null | undefined): string {
   if (!iso) return '';
   const [, month, day] = iso.slice(0, 10).split('-');
@@ -6,6 +8,28 @@ export function formatDate(iso: string | null | undefined): string {
 
 export function formatKm(km: number): string {
   return `${km.toLocaleString('pt-BR')} km`;
+}
+
+/** Rótulo humano do tipo de modalidade. */
+export function modalityKindLabel(kind: ModalityKind): string {
+  return kind === 'walk' ? 'Caminhada' : 'Corrida';
+}
+
+/** Emoji do tipo, para chips compactos. */
+export function modalityKindEmoji(kind: ModalityKind): string {
+  return kind === 'walk' ? '🚶' : '🏃';
+}
+
+/** Ex.: "Corrida 10 km". */
+export function modalityLabel(m: Modality): string {
+  return `${modalityKindLabel(m.kind)} ${formatKm(m.distanceKm)}`;
+}
+
+/** Ordena por distância, depois tipo — para exibição estável. */
+export function sortModalities(modalities: Modality[]): Modality[] {
+  return [...modalities].sort(
+    (a, b) => a.distanceKm - b.distanceKm || a.kind.localeCompare(b.kind)
+  );
 }
 
 export function firstName(name: string): string {

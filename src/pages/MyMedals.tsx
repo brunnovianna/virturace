@@ -11,7 +11,7 @@ import { useUser } from '../contexts/Auth';
 import {
   firstName,
   formatDate,
-  formatKm,
+  modalityLabel,
   photoToDataUrl,
   throwConfetti,
 } from '../utils';
@@ -105,7 +105,7 @@ export default function MyMedals() {
                     </Link>
                   </h3>
                   <span className="text-sm text-papel-suave">
-                    {formatKm(reg.event.distanceKm)} ·{' '}
+                    {reg.modality ? `${modalityLabel(reg.modality)} · ` : ''}
                     {formatDate(reg.event.startDate)} a{' '}
                     {formatDate(reg.event.endDate)}
                   </span>
