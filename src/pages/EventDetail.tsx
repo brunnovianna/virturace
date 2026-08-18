@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { getEvent } from '../api/events';
@@ -22,11 +22,21 @@ export default function EventDetail() {
   const [subscribing, setSubscribing] = useState(false);
   const [actionError, setActionError] = useState('');
   const [chosenModality, setChosenModality] = useState('');
+  const [shareMsg, setShareMsg] = useState('');
 
   const { data, error, isPending } = useQuery({
     queryKey: ['event', id],
     queryFn: () => getEvent(id),
   });
+
+  // Título da aba por corrida — o preview de link (og:*) é montado no servidor
+  // pela função api/og.ts, que os robôs de compartilhamento enxergam.
+  useEffect(() => {
+    if (data?.name) document.title = `${data.name} · VirtuRace`;
+    return () => {
+      document.title = 'VirtuRace';
+    };
+  }, [data?.name]);
 
   async function handleSubscribe(modalityId: string) {
     if (!modalityId) {
@@ -78,6 +88,38 @@ export default function EventDetail() {
     data.modalities.length === 1 ? data.modalities[0].id : '';
   const selectedModality = chosenModality || soloModality;
 
+  async function handleShare() {
+    if (!data) return;
+    const url = `${window.location.origin}/corrida/${data.id}`;
+    const period = formatRangeShort(data.startDate, data.endDate);
+    const desc = data.description?.trim();
+    const text = [
+      `${data.name} · ${period} 🏃`,
+      desc,
+      'Entra na pista comigo na VirtuRace! 🎉',
+    ]
+      .filter(Boolean)
+      .join('\n\n');
+    setShareMsg('');
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `${data.name} · VirtuRace`, text, url });
+        return;
+      }
+      throw new Error('share indisponível');
+    } catch (err) {
+      // Usuário cancelou a folha de compartilhamento — sem ruído.
+      if (err instanceof DOMException && err.name === 'AbortError') return;
+      try {
+        await navigator.clipboard.writeText(`${text}\n${url}`);
+        setShareMsg('Link copiado! Cole onde quiser 🎉');
+      } catch {
+        setShareMsg(url);
+      }
+      window.setTimeout(() => setShareMsg(''), 4000);
+    }
+  }
+
   return (
     <main className="mx-auto max-w-4xl px-5 pb-24 pt-4">
       <Link
@@ -125,6 +167,35 @@ export default function EventDetail() {
               medalhas
             </span>
           </div>
+        </div>
+
+        <div className="mb-5">
+          <button
+            type="button"
+            onClick={handleShare}
+            className="inline-flex items-center gap-2 rounded-full bg-black/25 px-4 py-2 text-sm font-semibold text-white transition hover:bg-black/40"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4 w-4"
+              aria-hidden="true"
+            >
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+              <line x1="15.4" y1="6.5" x2="8.6" y2="10.5" />
+            </svg>
+            Compartilhar
+          </button>
+          {shareMsg && (
+            <p className="mt-2 break-all text-xs text-amarelo">{shareMsg}</p>
+          )}
         </div>
 
         {!mine && (
