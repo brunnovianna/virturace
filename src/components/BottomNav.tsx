@@ -57,8 +57,9 @@ function IconPistas({ className }: IconProps) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d="M5 21V3" />
-      <path d="M5 4h12l-2.5 3.5L17 11H5" />
+      <path d="M6.5 21C10.5 16.5 5 13 9 9" />
+      <path d="M12.5 21c3-4.5-2.5-7 1.5-11" />
+      <path d="M9.3 21c3.4-4.6-2.2-7 1.8-11" strokeDasharray="2.1 2.6" />
     </svg>
   );
 }
